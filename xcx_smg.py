@@ -56,8 +56,14 @@ def procesar(urlMangaImg, strRutaCap):
         salir = 1
         iprc = 1
         while (salir != 0):
-                strURL = urlMangaImg + str(iprc) + ".jpg"
-                strNomFile = str(iprc) + ".jpg"
+                """Habría que agregar un 0 al contador en formato string para concatenar"""
+                numContador = ""
+                if (len(str(iprc)) == 1):
+                        numContador = str(iprc).zfill(2)
+                else:
+                        numContador = str(iprc)
+                strURL = urlMangaImg + str(numContador) + ".jpg"
+                strNomFile = str(numContador) + ".jpg"
                 if (descargarURL(strURL, strRutaCap + strNomFile) == 1):
                         iprc = iprc + 1
                 else:
@@ -71,11 +77,22 @@ def descargarURL(strRutaUrl, strNombre):
         En esta version, se verifica en la carpeta del capitulo si ya existia el archivo previamente.
         en caso de existir, se salta al siguiente. """
         retorno = 0
+        user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
+        values = {'name': 'Michael Foord', 'location': 'Northampton', 'language': 'Python' }
+        headers = {'User-Agent': user_agent}
+
+        data = urllib.parse.urlencode(values)
+        data = data.encode('ascii')
+        
         try:
                 if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
-                        if (urllib.request.urlopen(strRutaUrl).getcode() == 200):
+                        req = urllib.request.Request(strRutaUrl, data, headers)
+                        resp = urllib.request.urlopen(req).getcode()
+                        if (resp == 200):
                                 print("Descargando: " + strRutaUrl) # + " en: " + strNombre)
-                                urllib.request.urlretrieve(strRutaUrl, strNombre)
+                                g = urllib.request.urlopen(req)
+                                with open(strNombre, 'b+w') as f:
+                                        f.write(g.read())
                                 retorno = 1
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
