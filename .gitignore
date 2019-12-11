@@ -1,2 +1,3 @@
 /__pycache__
-/xcx_smg_config.txt
+/smg_config.txt
+/*.gitignore
