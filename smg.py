@@ -14,7 +14,7 @@ De esta forma se evita al usuario de indicar cuantas paginas componen el capitul
 """
 
 OS = "Win32"
-smg_version = "1.2.6"
+smg_version = "1.2.7"
 topeManga = 0
 smg_Lib = "Mngs"
 
