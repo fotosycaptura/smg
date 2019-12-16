@@ -16,6 +16,7 @@ De esta forma se evita al usuario de indicar cuantas paginas componen el capitul
 OS = "Win32"
 smg_version = "1.2.6"
 topeManga = 0
+smg_Lib = "Mngs"
 
 #---------------- Configuracion Interna----------------------#
 def presentacion():
@@ -33,15 +34,17 @@ def configurar(strCarpeta, strCap):
         retorno = 0
         try:
                 strCarpeta = strCarpeta.replace(" ", "_")
-                ordenCrearCarpeta = "mkdir " + strCarpeta
-                if not(os.path.exists(strCarpeta) and os.path.isdir(strCarpeta)):
-                        os.system(ordenCrearCarpeta)
                 separador = "/"
                 if (OS != "Linux"):
                         separador = "\\"
-                os.system(ordenCrearCarpeta + separador + strCap.replace(" ", "_"))
+
+                mkdirec = os.path.join(smg_Lib, strCarpeta)
+                #print("Creando carpeta: " + mkdirec)
+                if not(os.path.exists(mkdirec) and os.path.isdir(mkdirec)):
+                        os.mkdir(mkdirec)
                 retorno = 1
-        except:
+        except OSError as error:
+                #print("Error: " + error)
                 retorno = 0
         return (retorno)
         
@@ -120,14 +123,16 @@ def run():
                                 print("Procesando ", lArreglo[1], " capitulo ", lArreglo[0])
                                 print("Creando carpetas")
                                 if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
-                                        strURL = lArreglo[2].replace(" ", "")
-                                        strURL = strURL.replace("\n", "")
-                                        strRutaCap = lArreglo[1].lstrip(" ")
                                         strSeparador = "/"
                                         if (OS != "Linux"):
                                                 strSeparador = "\\"
+                                        
+                                        strURL = lArreglo[2].replace(" ", "")
+                                        strURL = strURL.replace("\n", "")
+                                        strRutaCap = smg_Lib + strSeparador + lArreglo[1].lstrip(" ")
+                                        
                                         strRutaCap = strRutaCap.replace(" ", "_") + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
-                                        print("Comprobando...")
+                                        print("Comprobando..." + strRutaCap)
                                         if (procesar(strURL, strRutaCap) == 1):
                                                 print("...")
                                         else:
