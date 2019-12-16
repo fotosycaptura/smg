@@ -75,7 +75,7 @@ def procesar(urlMangaImg, strRutaCap):
 
 def descargarURL(strRutaUrl, strNombre):
         """ Es el encargado de descargar el archivo de la web si es que la conexion tuvo exito.
-        En esta version, se verifica en la carpeta del capitulo si ya existia el archivo previamente.
+        En esta version, se verifica en la carpeta del capitulo si ya existia el archivo a descargar previamente.
         en caso de existir, se salta al siguiente. """
         retorno = 0
         user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
@@ -84,7 +84,7 @@ def descargarURL(strRutaUrl, strNombre):
 
         data = urllib.parse.urlencode(values)
         data = data.encode('ascii')
-        
+
         try:
                 if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
                         req = urllib.request.Request(strRutaUrl, data, headers)
@@ -98,8 +98,7 @@ def descargarURL(strRutaUrl, strNombre):
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
-        except OSError as error:
-                print("Pasó: " + error)
+        except:
                 retorno = 0
         return(retorno)
 
