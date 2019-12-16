@@ -90,7 +90,7 @@ def descargarURL(strRutaUrl, strNombre):
                         req = urllib.request.Request(strRutaUrl, data, headers)
                         resp = urllib.request.urlopen(req).getcode()
                         if (resp == 200):
-                                print("Descargando: " + strRutaUrl) # + " en: " + strNombre)
+                                print("Descargando: " + strRutaUrl) #  + " en: " + strNombre)
                                 g = urllib.request.urlopen(req)
                                 with open(strNombre, 'b+w') as f:
                                         f.write(g.read())
@@ -98,7 +98,8 @@ def descargarURL(strRutaUrl, strNombre):
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
-        except:
+        except OSError as error:
+                print("Pasó: " + error)
                 retorno = 0
         return(retorno)
 
@@ -130,9 +131,12 @@ def run():
                                         strURL = lArreglo[2].replace(" ", "")
                                         strURL = strURL.replace("\n", "")
                                         strRutaCap = smg_Lib + strSeparador + lArreglo[1].lstrip(" ")
-                                        
                                         strRutaCap = strRutaCap.replace(" ", "_") + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
-                                        print("Comprobando..." + strRutaCap)
+                                        
+                                        print("Comprobando...")
+                                        #Habría que verificar si la carpeta del capítulo existe
+                                        if not(os.path.exists(strRutaCap) and os.path.isdir(strRutaCap)):
+                                                os.mkdir(strRutaCap)
                                         if (procesar(strURL, strRutaCap) == 1):
                                                 print("...")
                                         else:
