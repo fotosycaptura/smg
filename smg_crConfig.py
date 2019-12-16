@@ -17,6 +17,7 @@ class ArchivoConfiguracion():
             tope = len(lineas)
             while (i < tope):
                 encontrado = 0
+                #Separa por , o hace trozos del string
                 linea = lineas[i].split(",")
                 if (len(linea) < 3):
                     lineas2.remove(lineas[i])
@@ -32,6 +33,11 @@ class ArchivoConfiguracion():
                     i = i + 1
         return(lineas2)
     def crearConfigArchivo():
+        """Esta clase se encarga de crear el archivo de links, si es que
+        no existía. Ademas agrega una línea comentada a modo de ejemplo
+        para el usuario.
+        // indica comentar esa línea        
+        """
         try:
             if not (os.path.exists("smg_config.txt")):
                 file = open("smg_config.txt", "w")

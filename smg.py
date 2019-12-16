@@ -21,7 +21,7 @@ smg_Lib = "Mngs"
 #---------------- Configuracion Interna----------------------#
 def presentacion():
         print("******************************************************")
-        print("                 Mmanga Downloader                  ")
+        print("                 Mmanga Downloader                    ")
         print("                Version: " + smg_version + "          ")
         print("******************************************************")
 
@@ -34,9 +34,6 @@ def configurar(strCarpeta, strCap):
         retorno = 0
         try:
                 strCarpeta = strCarpeta.replace(" ", "_")
-                separador = "/"
-                if (OS != "Linux"):
-                        separador = "\\"
 
                 mkdirec = os.path.join(smg_Lib, strCarpeta)
                 #print("Creando carpeta: " + mkdirec)
