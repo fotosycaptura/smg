@@ -54,7 +54,8 @@ def procesar(urlMangaImg, strRutaCap):
         Realiza la llamada de la funcion que se encarga de descargar la imagen y
         nuevamente repite el proceso hasta que no existen imagenes para su descarga, con
         lo cual, finaliza el ciclo.
-        Requiere de dos parametros: url, y el lugar donde se dejara el archivo descargado. """
+        Requiere de dos parametros: url, y el lugar donde se dejara el archivo descargado.
+        procesar siempre regresa 1 """
         salir = 1
         iprc = 1
         while (salir != 0):
@@ -65,9 +66,11 @@ def procesar(urlMangaImg, strRutaCap):
                 numContador = str(iprc).zfill(2)
                 strURL = urlMangaImg + str(numContador) + ".jpg"
                 strNomFile = str(numContador) + ".jpg"
+                #se procede a descargar
                 if (descargarURL(strURL, strRutaCap + strNomFile) == 1):
                         iprc = iprc + 1
                 else:
+                        #no hay nada más que descargar
                         salir = 0
         global topeManga
         topeManga = (iprc - 1)
@@ -136,11 +139,8 @@ def run():
                                         #Habría que verificar si la carpeta del capítulo existe
                                         if not(os.path.exists(strRutaCap) and os.path.isdir(strRutaCap)):
                                                 os.mkdir(strRutaCap)
-                                        if (procesar(strURL, strRutaCap) == 1):
-                                                print("...")
-                                        else:
-                                                print("La operación no pudo ser completada... :(")
-                                                break
+                                        procesar(strURL, strRutaCap)
+                                        print("...")
                                 else:
                                         print("Hubo un problema en el modulo de [configurar] para la creacion de carpetas")
                         else:
