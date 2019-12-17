@@ -7,17 +7,14 @@ from smg_crConfig import ArchivoConfiguracion
 
 #---------------- Configuracion Interna----------------------#
 """ Esta seccion es para la configuracion interna del programa
-OS sirve para indicar si es ejecutado desde plataforma Linux o Win32
-Se debe sustituir Win32 por Linux si desea que funciona de forma adecuada en este sistema operativo.
 topeManga, es usada de forma interna para contar la cantidad de archivos que se han descargado satisfactoriamente.
 De esta forma se evita al usuario de indicar cuantas paginas componen el capitulo, dejando de forma automatica al sw contar.
+smg_Lib, es la ruta o librería en donde están almacenados los mangas.
 """
 
-OS = "Win32"
 smg_version = "1.2.7"
 topeManga = 0
 smg_Lib = "Mngs"
-strClave = "chapters"
 
 #---------------- Configuracion Interna----------------------#
 def presentacion():
@@ -107,7 +104,11 @@ def descargarURL(strRutaUrl, strNombre):
         except:
                 retorno = 0
         return(retorno)
-
+    
+def crearCarpetaCapitulo(strRutaCapitulo):
+    if not(os.path.exists(strRutaCapitulo) and os.path.isdir(strRutaCapitulo)):
+        os.mkdir(strRutaCapitulo)
+    
 def run():
         """ Es el encargado de iniciar el proceso principal de recoleccion, ejecucion de todos los modulos
             En esta version, se corrigen los espacios para las carpetas dentro del manga, reemplazandolos con guiones bajos _ """ 
@@ -148,9 +149,8 @@ def run():
                                                         strRutaCapi = strRutaCapi.replace(" ", "_") 
                                                         strRutaCapi = os.path.join(strRutaCapi, str(intCapActual).zfill(2))
                                                         print("Comprobando...")
-                                                        #Habría que verificar si la carpeta del capítulo existe
-                                                        if not(os.path.exists(strRutaCapi) and os.path.isdir(strRutaCapi)):
-                                                                os.mkdir(strRutaCapi)
+                                                        #Se crea la carpeta del capítulo
+                                                        crearCarpetaCapitulo(strRutaCapi)
                                                         #No olvidar que hay que agregar el n del cap a strUrl
                                                         strURL = strURL + str(intCapActual) + "/"
                                                         procesar(strURL, strRutaCapi)
@@ -168,9 +168,8 @@ def run():
                                                 strRutaCap = os.path.join(strRutaCap, lArreglo[0].replace(" ", "_"))
                                                 
                                                 print("Comprobando...")
-                                                #Habría que verificar si la carpeta del capítulo existe
-                                                if not(os.path.exists(strRutaCap) and os.path.isdir(strRutaCap)):
-                                                        os.mkdir(strRutaCap)
+                                                #Se crea la carpeta del capítulo
+                                                crearCarpetaCapitulo(strRutaCap)
                                                 procesar(strURL, strRutaCap)
                                                 print("...")
                                         else:
