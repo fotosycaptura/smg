@@ -65,10 +65,12 @@ def procesar(urlMangaImg, strRutaCap):
                 numContador = ""
                 #Se concatena un 0 al número al lado izquierdo hasta completar los dos dígitos
                 numContador = str(iprc).zfill(2)
+                #Viene la url terminada en chapters, habría que concatenar el n del cap
+                
                 strURL = urlMangaImg + str(numContador) + ".jpg"
                 strNomFile = str(numContador) + ".jpg"
                 #se procede a descargar
-                if (descargarURL(strURL, strRutaCap + strNomFile) == 1):
+                if (descargarURL(strURL, os.path.join(strRutaCap, strNomFile)) == 1):
                         iprc = iprc + 1
                 else:
                         #no hay nada más que descargar
@@ -125,26 +127,56 @@ def run():
                         lArreglo = i.split(",")
                         if (len(lArreglo) == 3):
                                 #Procesando "Nombre manga capítulo número"
-                                print("Procesando " + lArreglo[1] + " capitulo " + lArreglo[0])
-                                print("Creando carpetas")
-                                if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
-                                        strSeparador = "/"
-                                        if (OS != "Linux"):
-                                                strSeparador = "\\"
-                                        
-                                        strURL = lArreglo[2].replace(" ", "")
-                                        strURL = strURL.replace("\n", "")
-                                        strRutaCap = smg_Lib + strSeparador + lArreglo[1].lstrip(" ")
-                                        strRutaCap = strRutaCap.replace(" ", "_") + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
-                                        
-                                        print("Comprobando...")
-                                        #Habría que verificar si la carpeta del capítulo existe
-                                        if not(os.path.exists(strRutaCap) and os.path.isdir(strRutaCap)):
-                                                os.mkdir(strRutaCap)
-                                        procesar(strURL, strRutaCap)
-                                        print("...")
+                                #Habría que analizar si en lArreglo[0] no viene un guión.
+                                #De ser asi, significa que habría que iterar entre el primer dígito hasta el último dígito
+                                #es decir (cap inicial ... capítulo final)
+                                lMasCap = str(lArreglo[0]).split("-")
+                                if (len(lMasCap) == 2):
+                                        #Se procede a iterar
+                                        print("Se descargará el manga entre capítulos: " + str(lMasCap[0]) + " hasta " + str(lMasCap[1]))
+                                        for intCapActual in(range(int(lMasCap[0]), int(lMasCap[1]) + 1)):
+                                                print("Procesando manga: " + lArreglo[1] + " capitulo " + str(intCapActual).zfill(2))
+                                                print("Creando carpetas")
+                                                if (configurar(lArreglo[1].lstrip(" "), intCapActual) == 1):
+                                                        #Se extrae la url sin espacios
+                                                        strURL = lArreglo[2].replace(" ", "")
+                                                        #se extrae los enters o retornos
+                                                        strURL = strURL.replace("\n", "")
+                                                        #Se genera la carpeta del capítulo dentro de la librería de mangas
+                                                        strRutaCapi = os.path.join(smg_Lib, lArreglo[1].lstrip(" "))
+                                                        #Se genera la ruta de la carpeta del capítulo
+                                                        strRutaCapi = strRutaCapi.replace(" ", "_") # + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
+                                                        strRutaCapi = os.path.join(strRutaCapi, str(intCapActual).zfill(2))
+                                                        print("Comprobando...")
+                                                        #Habría que verificar si la carpeta del capítulo existe
+                                                        if not(os.path.exists(strRutaCapi) and os.path.isdir(strRutaCapi)):
+                                                                os.mkdir(strRutaCapi)
+                                                        #No olvidar que hay que agregar el n del cap a strUrl
+                                                        strURL = strURL + str(intCapActual) + "/"
+                                                        procesar(strURL, strRutaCapi)
+                                                
+                                                
                                 else:
-                                        print("Hubo un problema en el modulo de [configurar] para la creacion de carpetas")
+                                        print("Procesando manga: " + lArreglo[1] + " capitulo " + lArreglo[0])
+                                        print("Creando carpetas")
+                                        if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
+                                                strSeparador = "/"
+                                                if (OS != "Linux"):
+                                                        strSeparador = "\\"
+                                                
+                                                strURL = lArreglo[2].replace(" ", "")
+                                                strURL = strURL.replace("\n", "")
+                                                strRutaCap = smg_Lib + strSeparador + lArreglo[1].lstrip(" ")
+                                                strRutaCap = strRutaCap.replace(" ", "_") + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
+                                                
+                                                print("Comprobando...")
+                                                #Habría que verificar si la carpeta del capítulo existe
+                                                if not(os.path.exists(strRutaCap) and os.path.isdir(strRutaCap)):
+                                                        os.mkdir(strRutaCap)
+                                                procesar(strURL, strRutaCap)
+                                                print("...")
+                                        else:
+                                                print("Hubo un problema en el modulo de [configurar] para la creacion de carpetas")
                         else:
                                 print("No se pudo procesar una de las lineas del archivo de configuracion. ¿Estan correctas las lineas?")
         print("Finalizado. Presione [ENTER] para salir")
