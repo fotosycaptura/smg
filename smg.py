@@ -145,7 +145,7 @@ def run():
                                                         #Se genera la carpeta del capítulo dentro de la librería de mangas
                                                         strRutaCapi = os.path.join(smg_Lib, lArreglo[1].lstrip(" "))
                                                         #Se genera la ruta de la carpeta del capítulo
-                                                        strRutaCapi = strRutaCapi.replace(" ", "_") # + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
+                                                        strRutaCapi = strRutaCapi.replace(" ", "_") 
                                                         strRutaCapi = os.path.join(strRutaCapi, str(intCapActual).zfill(2))
                                                         print("Comprobando...")
                                                         #Habría que verificar si la carpeta del capítulo existe
@@ -160,14 +160,12 @@ def run():
                                         print("Procesando manga: " + lArreglo[1] + " capitulo " + lArreglo[0])
                                         print("Creando carpetas")
                                         if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
-                                                strSeparador = "/"
-                                                if (OS != "Linux"):
-                                                        strSeparador = "\\"
                                                 
                                                 strURL = lArreglo[2].replace(" ", "")
                                                 strURL = strURL.replace("\n", "")
-                                                strRutaCap = smg_Lib + strSeparador + lArreglo[1].lstrip(" ")
-                                                strRutaCap = strRutaCap.replace(" ", "_") + strSeparador + lArreglo[0].replace(" ", "_") + strSeparador
+                                                strRutaCap = os.path.join(smg_Lib, lArreglo[1].lstrip(" "))
+                                                strRutaCap = strRutaCap.replace(" ", "_")
+                                                strRutaCap = os.path.join(strRutaCap, lArreglo[0].replace(" ", "_"))
                                                 
                                                 print("Comprobando...")
                                                 #Habría que verificar si la carpeta del capítulo existe
