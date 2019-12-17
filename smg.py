@@ -64,10 +64,10 @@ def procesar(urlMangaImg, strRutaCap):
                 numContador = str(iprc).zfill(2)
                 #Viene la url terminada en chapters, habría que concatenar el n del cap
                 
-                strURL = urlMangaImg + str(numContador) + ".jpg"
+                strURL = urlMangaImg # + str(numContador) + ".jpg"
                 strNomFile = str(numContador) + ".jpg"
                 #se procede a descargar
-                if (descargarURL(strURL, os.path.join(strRutaCap, strNomFile)) == 1):
+                if (descargarURL(strURL, iprc, os.path.join(strRutaCap, strNomFile)) == 1):
                         iprc = iprc + 1
                 else:
                         #no hay nada más que descargar
@@ -76,10 +76,15 @@ def procesar(urlMangaImg, strRutaCap):
         topeManga = (iprc - 1)
         return(1)
 
-def descargarURL(strRutaUrl, strNombre):
+def descargarURL(strRutaUrl, numContador, strNombre):
         """ Es el encargado de descargar el archivo de la web si es que la conexion tuvo exito.
         En esta version, se verifica en la carpeta del capitulo si ya existia el archivo a descargar previamente.
-        en caso de existir, se salta al siguiente. """
+        en caso de existir, se salta al siguiente.
+        2019-12-17-12.13
+        strRutaUrl recibe sólamente hasta /chapters/1/
+        la imagen se le concatenará desde numContador.
+        Se trabajará en una versión para, si no encuentra el 01.jpg, intentar con 1.jpg.
+        """
         retorno = 0
         user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
         values = {'name': 'Niño Rata', 'location': 'Quete', 'language': 'Python' }
@@ -90,14 +95,29 @@ def descargarURL(strRutaUrl, strNombre):
 
         try:
                 if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
-                        req = urllib.request.Request(strRutaUrl, data, headers)
+                        strIntento01 = strRutaUrl + str(numContador).zfill(2) + ".jpg"
+                        strIntento02 = strRutaUrl + str(numContador) + ".jpg"
+                        #print("Ruta 01: " + strIntento01)
+                        #print("Ruta 02: " + strIntento02)
+                        req = urllib.request.Request(strIntento01, data, headers)
                         resp = urllib.request.urlopen(req).getcode()
                         if (resp == 200):
-                                print("Descargando: " + strRutaUrl)
+                                print("Descargando: " + strIntento01)
                                 g = urllib.request.urlopen(req)
                                 with open(strNombre, 'b+w') as f:
                                         f.write(g.read())
                                 retorno = 1
+                        else:
+                                #Se realiza segundo intento
+                                print("Se detectó una anomalía en la fuerza. Segundo intento...")
+                                req = urllib.request.Request(strIntento02, data, headers)
+                                resp = urllib.request.urlopen(req).getcode()
+                                if (resp == 200):
+                                        print("Descargando: " + strIntento02)
+                                        g = urllib.request.urlopen(req)
+                                        with open(strNombre, 'b+w') as f:
+                                                f.write(g.read())
+                                        retorno = 1
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
