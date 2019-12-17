@@ -101,7 +101,7 @@ def descargarURL(strRutaUrl, strNombre):
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
-        except ValueError:
+        except:
             #print("Algo ocurrio en descargarURL: " + ValueError)
             retorno = 0
         return(retorno)
