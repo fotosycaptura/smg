@@ -12,7 +12,7 @@ De esta forma se evita al usuario de indicar cuantas paginas componen el capitul
 smg_Lib, es la ruta o librería en donde están almacenados los mangas.
 """
 
-smg_version = "1.2.7"
+smg_version = "1.2.8"
 topeManga = 0
 smg_Lib = "Mngs"
 
