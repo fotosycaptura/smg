@@ -17,6 +17,7 @@ OS = "Win32"
 smg_version = "1.2.7"
 topeManga = 0
 smg_Lib = "Mngs"
+strClave = "chapters"
 
 #---------------- Configuracion Interna----------------------#
 def presentacion():
@@ -93,7 +94,7 @@ def descargarURL(strRutaUrl, strNombre):
                         req = urllib.request.Request(strRutaUrl, data, headers)
                         resp = urllib.request.urlopen(req).getcode()
                         if (resp == 200):
-                                print("Descargando: " + strRutaUrl) #  + " en: " + strNombre)
+                                print("Descargando: " + strRutaUrl)
                                 g = urllib.request.urlopen(req)
                                 with open(strNombre, 'b+w') as f:
                                         f.write(g.read())
@@ -123,7 +124,8 @@ def run():
                 for i in xcxConfig:
                         lArreglo = i.split(",")
                         if (len(lArreglo) == 3):
-                                print("Procesando ", lArreglo[1], " capitulo ", lArreglo[0])
+                                #Procesando "Nombre manga capítulo número"
+                                print("Procesando " + lArreglo[1] + " capitulo " + lArreglo[0])
                                 print("Creando carpetas")
                                 if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
                                         strSeparador = "/"
