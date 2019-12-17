@@ -101,8 +101,9 @@ def descargarURL(strRutaUrl, strNombre):
                 else:
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
-        except:
-                retorno = 0
+        except ValueError:
+            #print("Algo ocurrio en descargarURL: " + ValueError)
+            retorno = 0
         return(retorno)
     
 def crearCarpetaCapitulo(strRutaCapitulo):
@@ -154,8 +155,6 @@ def run():
                                                         #No olvidar que hay que agregar el n del cap a strUrl
                                                         strURL = strURL + str(intCapActual) + "/"
                                                         procesar(strURL, strRutaCapi)
-                                                
-                                                
                                 else:
                                         print("Procesando manga: " + lArreglo[1] + " capitulo " + lArreglo[0])
                                         print("Creando carpetas")
@@ -170,6 +169,9 @@ def run():
                                                 print("Comprobando...")
                                                 #Se crea la carpeta del capítulo
                                                 crearCarpetaCapitulo(strRutaCap)
+                                                #No olvidar que hay que agregar el n del cap a strUrl
+                                                intCapActual = int(lArreglo[0])
+                                                strURL = strURL + str(intCapActual) + "/"
                                                 procesar(strURL, strRutaCap)
                                                 print("...")
                                         else:
