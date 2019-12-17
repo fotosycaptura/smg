@@ -29,15 +29,19 @@ def configurar(strCarpeta, strCap):
         """ Se encarga de crear la carpeta para el almacenamiento de las imagenes que componen el manga
         Como parametros recibe dos de tipo string, la primera es la carpeta principal que contendra el manga,
         la segunda es la carpeta oneshot o numero del capitulo de existir mas capitulos.
-        Una de las mejoras incluidas en esta version, es la verificacion de la existencia antes de su creacion """
+        Una de las mejoras incluidas en esta version, es la verificacion de la existencia antes de su creacion.
+        Retorna 1 (true) si todo es correcto
+        Retorno 0 (false) si hubo algún problema """
         
         retorno = 0
         try:
+                #Se reemplazan los espacios por guiones
                 strCarpeta = strCarpeta.replace(" ", "_")
-
+                #Se genera la ruta usando el smg_Lib y el nombre del manga
                 mkdirec = os.path.join(smg_Lib, strCarpeta)
-                #print("Creando carpeta: " + mkdirec)
+                #Si la ruta no existe
                 if not(os.path.exists(mkdirec) and os.path.isdir(mkdirec)):
+                        #Se crea
                         os.mkdir(mkdirec)
                 retorno = 1
         except OSError as error:
@@ -54,12 +58,11 @@ def procesar(urlMangaImg, strRutaCap):
         salir = 1
         iprc = 1
         while (salir != 0):
-                """Habría que agregar un 0 al contador en formato string para concatenar"""
+                """El formato en submanga ha cambiado.
+                Habría que agregar un 0 al contador en formato string para concatenar"""
                 numContador = ""
-                if (len(str(iprc)) == 1):
-                        numContador = str(iprc).zfill(2)
-                else:
-                        numContador = str(iprc)
+                #Se concatena un 0 al número al lado izquierdo hasta completar los dos dígitos
+                numContador = str(iprc).zfill(2)
                 strURL = urlMangaImg + str(numContador) + ".jpg"
                 strNomFile = str(numContador) + ".jpg"
                 if (descargarURL(strURL, strRutaCap + strNomFile) == 1):
