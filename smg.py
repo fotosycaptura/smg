@@ -85,7 +85,7 @@ def descargarURL(strRutaUrl, strNombre):
         en caso de existir, se salta al siguiente. """
         retorno = 0
         user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
-        values = {'name': 'Michael Foord', 'location': 'Northampton', 'language': 'Python' }
+        values = {'name': 'Niño Rata', 'location': 'Quete', 'language': 'Python' }
         headers = {'User-Agent': user_agent}
 
         data = urllib.parse.urlencode(values)
@@ -135,7 +135,7 @@ def run():
                                         #Se procede a iterar
                                         print("Se descargará el manga entre capítulos: " + str(lMasCap[0]) + " hasta " + str(lMasCap[1]))
                                         for intCapActual in(range(int(lMasCap[0]), int(lMasCap[1]) + 1)):
-                                                print("Procesando manga: " + lArreglo[1] + " capitulo " + str(intCapActual).zfill(2))
+                                                print("Procesando manga: " + lArreglo[1] + " capitulo " + str(intCapActual).zfill(2) + "/" + str(lMasCap[1]))
                                                 print("Creando carpetas")
                                                 if (configurar(lArreglo[1].lstrip(" "), intCapActual) == 1):
                                                         #Se extrae la url sin espacios
