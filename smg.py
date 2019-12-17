@@ -118,7 +118,7 @@ def descargarURL(strRutaUrl, numContador, strNombre):
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
         except:
-            print("Algo ocurrio en descargarURL: ")
+            #print("Algo ocurrio en descargarURL: ")
             retorno = 0
         return(retorno)
     
