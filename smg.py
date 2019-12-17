@@ -57,17 +57,9 @@ def procesar(urlMangaImg, strRutaCap):
         salir = 1
         iprc = 1
         while (salir != 0):
-                """El formato en submanga ha cambiado.
-                Habría que agregar un 0 al contador en formato string para concatenar"""
-                numContador = ""
-                #Se concatena un 0 al número al lado izquierdo hasta completar los dos dígitos
-                numContador = str(iprc).zfill(2)
-                #Viene la url terminada en chapters, habría que concatenar el n del cap
-                
-                strURL = urlMangaImg # + str(numContador) + ".jpg"
-                strNomFile = str(numContador) + ".jpg"
+                strNomFile = str(iprc).zfill(2) + ".jpg"
                 #se procede a descargar
-                if (descargarURL(strURL, iprc, os.path.join(strRutaCap, strNomFile)) == 1):
+                if (descargarURL(urlMangaImg, iprc, os.path.join(strRutaCap, strNomFile)) == 1):
                         iprc = iprc + 1
                 else:
                         #no hay nada más que descargar
@@ -99,8 +91,12 @@ def descargarURL(strRutaUrl, numContador, strNombre):
                         strIntento02 = strRutaUrl + str(numContador) + ".jpg"
                         #print("Ruta 01: " + strIntento01)
                         #print("Ruta 02: " + strIntento02)
+                        resp = 404
                         req = urllib.request.Request(strIntento01, data, headers)
-                        resp = urllib.request.urlopen(req).getcode()
+                        try:
+                                resp = urllib.request.urlopen(req).getcode()
+                        except:
+                                pass
                         if (resp == 200):
                                 print("Descargando: " + strIntento01)
                                 g = urllib.request.urlopen(req)
@@ -109,7 +105,7 @@ def descargarURL(strRutaUrl, numContador, strNombre):
                                 retorno = 1
                         else:
                                 #Se realiza segundo intento
-                                print("Se detectó una anomalía en la fuerza. Segundo intento...")
+                                #print("Se detectó una anomalía en la fuerza. Segundo intento...")
                                 req = urllib.request.Request(strIntento02, data, headers)
                                 resp = urllib.request.urlopen(req).getcode()
                                 if (resp == 200):
@@ -122,7 +118,7 @@ def descargarURL(strRutaUrl, numContador, strNombre):
                         print("Ya existe: " + strNombre + ". [Saltado]")
                         retorno = 1
         except:
-            #print("Algo ocurrio en descargarURL: " + ValueError)
+            print("Algo ocurrio en descargarURL: ")
             retorno = 0
         return(retorno)
     
