@@ -42,8 +42,8 @@ class ArchivoConfiguracion():
             if not (os.path.exists("smg_config.txt")):
                 file = open("smg_config.txt", "w")
                 file.write("//<-- Línea de comentario" + os.linesep)
-                file.write("//Capítulos, Nombre Manga, URL" + os.linesep)
-                file.write("//01, Mi Manga, http://www....")
+                file.write("//Capítulos, Nombre Manga, URL terminada en chapters/" + os.linesep)
+                file.write("//01, Mi Manga, http://www..../chapters/")
                 file.close()
                 print("Archivo de configuración creado.")
                 print("Modifíquelo para su uso.")
