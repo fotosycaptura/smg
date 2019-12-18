@@ -12,7 +12,7 @@ De esta forma se evita al usuario de indicar cuantas paginas componen el capitul
 smg_Lib, es la ruta o librería en donde están almacenados los mangas.
 """
 
-smg_version = "1.2.8"
+smg_version = "1.2.9"
 topeManga = 0
 smg_Lib = "Mngs"
 
@@ -86,37 +86,41 @@ def descargarURL(strRutaUrl, numContador, strNombre):
         data = data.encode('ascii')
 
         try:
-                if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
-                        strIntento01 = strRutaUrl + str(numContador).zfill(2) + ".jpg"
-                        strIntento02 = strRutaUrl + str(numContador) + ".jpg"
-                        #print("Ruta 01: " + strIntento01)
-                        #print("Ruta 02: " + strIntento02)
-                        resp = 404
-                        req = urllib.request.Request(strIntento01, data, headers)
-                        try:
-                                resp = urllib.request.urlopen(req).getcode()
-                        except:
-                                pass
-                        if (resp == 200):
-                                print("Descargando: " + strIntento01)
-                                g = urllib.request.urlopen(req)
-                                with open(strNombre, 'b+w') as f:
-                                        f.write(g.read())
-                                retorno = 1
-                        else:
-                                #Se realiza segundo intento
-                                #print("Se detectó una anomalía en la fuerza. Segundo intento...")
-                                req = urllib.request.Request(strIntento02, data, headers)
-                                resp = urllib.request.urlopen(req).getcode()
-                                if (resp == 200):
-                                        print("Descargando: " + strIntento02)
-                                        g = urllib.request.urlopen(req)
-                                        with open(strNombre, 'b+w') as f:
-                                                f.write(g.read())
-                                        retorno = 1
+            #Quizás ya exista, pero, y si pesa 0kn?
+            if os.path.exists(strNombre) and os.path.isfile(strNombre) and os.path.getsize(strNombre) == 0:
+                os.remove(strNombre)
+                
+            if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
+                strIntento01 = strRutaUrl + str(numContador).zfill(2) + ".jpg"
+                strIntento02 = strRutaUrl + str(numContador) + ".jpg"
+                #print("Ruta 01: " + strIntento01)
+                #print("Ruta 02: " + strIntento02)
+                resp = 404
+                req = urllib.request.Request(strIntento01, data, headers)
+                try:
+                    resp = urllib.request.urlopen(req).getcode()
+                except:
+                    pass
+                if (resp == 200):
+                    print("Descargando: " + strIntento01)
+                    g = urllib.request.urlopen(req)
+                    with open(strNombre, 'b+w') as f:
+                            f.write(g.read())
+                    retorno = 1
                 else:
-                        print("Ya existe: " + strNombre + ". [Saltado]")
+                    #Se realiza segundo intento
+                    #print("Se detectó una anomalía en la fuerza. Segundo intento...")
+                    req = urllib.request.Request(strIntento02, data, headers)
+                    resp = urllib.request.urlopen(req).getcode()
+                    if (resp == 200):
+                        print("Descargando: " + strIntento02)
+                        g = urllib.request.urlopen(req)
+                        with open(strNombre, 'b+w') as f:
+                                f.write(g.read())
                         retorno = 1
+            else:
+                print("Ya existe: " + strNombre + ". [Saltado]")
+                retorno = 1
         except:
             #print("Algo ocurrio en descargarURL: ")
             retorno = 0
