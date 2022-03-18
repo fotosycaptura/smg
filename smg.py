@@ -15,6 +15,7 @@ smg_Lib, es la ruta o librería en donde están almacenados los mangas.
 smg_version = "1.2.9"
 topeManga = 0
 smg_Lib = "Mngs"
+extension_imagen = ".webp"
 
 #---------------- Configuracion Interna----------------------#
 def presentacion():
@@ -57,7 +58,7 @@ def procesar(urlMangaImg, strRutaCap):
         salir = 1
         iprc = 1
         while (salir != 0):
-                strNomFile = str(iprc).zfill(2) + ".jpg"
+                strNomFile = str(iprc).zfill(2) + extension_imagen
                 #se procede a descargar
                 if (descargarURL(urlMangaImg, iprc, os.path.join(strRutaCap, strNomFile)) == 1):
                         iprc = iprc + 1
@@ -79,7 +80,9 @@ def descargarURL(strRutaUrl, numContador, strNombre):
         """
         retorno = 0
         user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
-        values = {'name': 'Niño Rata', 'location': 'Quete', 'language': 'Python' }
+        values = {'name': 'Niño Rata', 
+        'location': 'Quete', 
+        'language': 'Importa' }
         headers = {'User-Agent': user_agent}
 
         data = urllib.parse.urlencode(values)
@@ -91,10 +94,10 @@ def descargarURL(strRutaUrl, numContador, strNombre):
                 os.remove(strNombre)
                 
             if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
-                strIntento01 = strRutaUrl + str(numContador).zfill(2) + ".jpg"
-                strIntento02 = strRutaUrl + str(numContador) + ".jpg"
-                #print("Ruta 01: " + strIntento01)
-                #print("Ruta 02: " + strIntento02)
+                strIntento01 = strRutaUrl + str(numContador).zfill(2) + extension_imagen
+                strIntento02 = strRutaUrl + str(numContador) + extension_imagen
+                # print("Ruta 01: " + strIntento01)
+                # print("Ruta 02: " + strIntento02)
                 resp = 404
                 req = urllib.request.Request(strIntento01, data, headers)
                 try:
@@ -121,8 +124,10 @@ def descargarURL(strRutaUrl, numContador, strNombre):
             else:
                 print("Ya existe: " + strNombre + ". [Saltado]")
                 retorno = 1
-        except:
-            #print("Algo ocurrio en descargarURL: ")
+        except urllib.error.HTTPError as e:
+            # print("Algo ocurrio en descargarURL: ")
+            # print(e.code)
+            # print("Oops!", sys.exc_info()[0], "occurred.")
             retorno = 0
         return(retorno)
     
