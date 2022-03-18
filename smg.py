@@ -1,208 +1,118 @@
-#!/usr/bin/env python3
-import os, os.path, sys, time, urllib, urllib.request
-from smg_crConfig import ArchivoConfiguracion
-##############################################################
-# Requiere Python 3.x para su funcionamiento                 #
-##############################################################
 
-#---------------- Configuracion Interna----------------------#
-""" Esta seccion es para la configuracion interna del programa
-topeManga, es usada de forma interna para contar la cantidad de archivos que se han descargado satisfactoriamente.
-De esta forma se evita al usuario de indicar cuantas paginas componen el capitulo, dejando de forma automatica al sw contar.
-smg_Lib, es la ruta o librería en donde están almacenados los mangas.
+import configparser
+import bs4
+import requests
+import os
+import json
+"""
+Creado en python 3.9
 """
 
-smg_version = "1.2.9"
-topeManga = 0
-smg_Lib = "Mngs"
-extension_imagen = ".webp"
+"""
+Configuración Interna
 
-#---------------- Configuracion Interna----------------------#
+Esta seccion es para la configuracion interna del programa
+smg_Lib, es la ruta o librería en donde están almacenados los mangas.
+Está definida en config.ini en el parámetro ruta_mangas
+"""
+smg_version = "1.3.0"
+config = configparser.ConfigParser()
+config.read('config.ini') 
+home_mangas = config['DEFAULT']['ruta_mangas']
+opciones = config.get('MANGAS','listado_mangas')
+listado_mangas = json.loads(opciones)
+
+"""
+Fin de la definición de configuración
+"""
+
 def presentacion():
         print("******************************************************")
         print("                 Mmanga Downloader                    ")
         print("                Version: " + smg_version + "          ")
         print("******************************************************")
 
-def configurar(strCarpeta, strCap):
-        """ Se encarga de crear la carpeta para el almacenamiento de las imagenes que componen el manga
-        Como parametros recibe dos de tipo string, la primera es la carpeta principal que contendra el manga,
-        la segunda es la carpeta oneshot o numero del capitulo de existir mas capitulos.
-        Una de las mejoras incluidas en esta version, es la verificacion de la existencia antes de su creacion.
-        Retorna 1 (true) si todo es correcto
-        Retorno 0 (false) si hubo algún problema """
-        
-        retorno = 0
-        try:
-                #Se reemplazan los espacios por guiones
-                strCarpeta = strCarpeta.replace(" ", "_")
-                #Se genera la ruta usando el smg_Lib y el nombre del manga
-                mkdirec = os.path.join(smg_Lib, strCarpeta)
-                #Si la ruta no existe
-                if not(os.path.exists(mkdirec) and os.path.isdir(mkdirec)):
-                        #Se crea
-                        os.mkdir(mkdirec)
-                retorno = 1
-        except OSError as error:
-                #print("Error: " + error)
-                retorno = 0
-        return (retorno)
-        
-def procesar(urlMangaImg, strRutaCap):
-        """ Se encarga de crear la URL con la imagen para descargarla posteriormente.
-        Realiza la llamada de la funcion que se encarga de descargar la imagen y
-        nuevamente repite el proceso hasta que no existen imagenes para su descarga, con
-        lo cual, finaliza el ciclo.
-        Requiere de dos parametros: url, y el lugar donde se dejara el archivo descargado.
-        procesar siempre regresa 1 """
-        salir = 1
-        iprc = 1
-        while (salir != 0):
-                strNomFile = str(iprc).zfill(2) + extension_imagen
-                #se procede a descargar
-                if (descargarURL(urlMangaImg, iprc, os.path.join(strRutaCap, strNomFile)) == 1):
-                        iprc = iprc + 1
-                else:
-                        #no hay nada más que descargar
-                        salir = 0
-        global topeManga
-        topeManga = (iprc - 1)
-        return(1)
-
-def descargarURL(strRutaUrl, numContador, strNombre):
-        """ Es el encargado de descargar el archivo de la web si es que la conexion tuvo exito.
-        En esta version, se verifica en la carpeta del capitulo si ya existia el archivo a descargar previamente.
-        en caso de existir, se salta al siguiente.
-        2019-12-17-12.13
-        strRutaUrl recibe sólamente hasta /chapters/1/
-        la imagen se le concatenará desde numContador.
-        Se trabajará en una versión para, si no encuentra el 01.jpg, intentar con 1.jpg.
-        """
-        retorno = 0
-        user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
-        values = {'name': 'Niño Rata', 
-        'location': 'Quete', 
-        'language': 'Importa' }
-        headers = {'User-Agent': user_agent}
-
-        data = urllib.parse.urlencode(values)
-        data = data.encode('ascii')
-
-        try:
-            #Quizás ya exista, pero, y si pesa 0kn?
-            if os.path.exists(strNombre) and os.path.isfile(strNombre) and os.path.getsize(strNombre) == 0:
-                os.remove(strNombre)
-                
-            if not(os.path.exists(strNombre) and os.path.isfile(strNombre)):
-                strIntento01 = strRutaUrl + str(numContador).zfill(2) + extension_imagen
-                strIntento02 = strRutaUrl + str(numContador) + extension_imagen
-                # print("Ruta 01: " + strIntento01)
-                # print("Ruta 02: " + strIntento02)
-                resp = 404
-                req = urllib.request.Request(strIntento01, data, headers)
-                try:
-                    resp = urllib.request.urlopen(req).getcode()
-                except:
-                    pass
-                if (resp == 200):
-                    print("Descargando: " + strIntento01)
-                    g = urllib.request.urlopen(req)
-                    with open(strNombre, 'b+w') as f:
-                            f.write(g.read())
-                    retorno = 1
-                else:
-                    #Se realiza segundo intento
-                    #print("Se detectó una anomalía en la fuerza. Segundo intento...")
-                    req = urllib.request.Request(strIntento02, data, headers)
-                    resp = urllib.request.urlopen(req).getcode()
-                    if (resp == 200):
-                        print("Descargando: " + strIntento02)
-                        g = urllib.request.urlopen(req)
-                        with open(strNombre, 'b+w') as f:
-                                f.write(g.read())
-                        retorno = 1
-            else:
-                print("Ya existe: " + strNombre + ". [Saltado]")
-                retorno = 1
-        except urllib.error.HTTPError as e:
-            # print("Algo ocurrio en descargarURL: ")
-            # print(e.code)
-            # print("Oops!", sys.exc_info()[0], "occurred.")
-            retorno = 0
-        return(retorno)
-    
-def crearCarpetaCapitulo(strRutaCapitulo):
-    if not(os.path.exists(strRutaCapitulo) and os.path.isdir(strRutaCapitulo)):
-        os.mkdir(strRutaCapitulo)
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
     
 def run():
-        """ Es el encargado de iniciar el proceso principal de recoleccion, ejecucion de todos los modulos
-            En esta version, se corrigen los espacios para las carpetas dentro del manga, reemplazandolos con guiones bajos _ """ 
+        """ 
+        Es el encargado de iniciar el proceso principal de recoleccion, ejecucion de todos los modulos
+        En esta version, se corrigen los espacios para las carpetas dentro del manga, reemplazandolos con guiones bajos _ 
+        """ 
         presentacion()
-        print("Leyendo archivo de configuracion...")
-        try:
-                xcxConfig = ArchivoConfiguracion.leerConfigArchivo()
-        except:
-                print("Hubo un problema al intentar leer los datos.")
-                print("Creando archivo de datos inicial")
-                ArchivoConfiguracion.crearConfigArchivo()
-                exit()
-        print("Cargando...")
-        if (len(xcxConfig) > 0):
-                print("Se encontraron " + str(len(xcxConfig)) + " mangas en el archivo de configuracion para descargar.")
-                for i in xcxConfig:
-                        lArreglo = i.split(",")
-                        if (len(lArreglo) == 3):
-                                #Procesando "Nombre manga capítulo número"
-                                #Habría que analizar si en lArreglo[0] no viene un guión.
-                                #De ser asi, significa que habría que iterar entre el primer dígito hasta el último dígito
-                                #es decir (cap inicial ... capítulo final)
-                                lMasCap = str(lArreglo[0]).split("-")
-                                if (len(lMasCap) == 2):
-                                        #Se procede a iterar
-                                        print("Se descargará el manga entre capítulos: " + str(lMasCap[0]) + " hasta " + str(lMasCap[1]))
-                                        for intCapActual in(range(int(lMasCap[0]), int(lMasCap[1]) + 1)):
-                                                print("Procesando manga: " + lArreglo[1] + " capitulo " + str(intCapActual).zfill(2) + "/" + str(lMasCap[1]))
-                                                print("Creando carpetas")
-                                                if (configurar(lArreglo[1].lstrip(" "), intCapActual) == 1):
-                                                        #Se extrae la url sin espacios
-                                                        strURL = lArreglo[2].replace(" ", "")
-                                                        #se extrae los enters o retornos
-                                                        strURL = strURL.replace("\n", "")
-                                                        #Se genera la carpeta del capítulo dentro de la librería de mangas
-                                                        strRutaCapi = os.path.join(smg_Lib, lArreglo[1].lstrip(" "))
-                                                        #Se genera la ruta de la carpeta del capítulo
-                                                        strRutaCapi = strRutaCapi.replace(" ", "_") 
-                                                        strRutaCapi = os.path.join(strRutaCapi, str(intCapActual).zfill(2))
-                                                        print("Comprobando...")
-                                                        #Se crea la carpeta del capítulo
-                                                        crearCarpetaCapitulo(strRutaCapi)
-                                                        #No olvidar que hay que agregar el n del cap a strUrl
-                                                        strURL = strURL + str(intCapActual) + "/"
-                                                        procesar(strURL, strRutaCapi)
+        print(f"Se encontraron {len(listado_mangas)} mangas para descargar...")
+        print("Procesando...")
+        for manga in listado_mangas:
+                url_base = manga['url_base'] + '{}/'
+                # Por cada manga se crea su carpeta, si es que no existía antes
+                ruta_manga = os.path.join(home_mangas, manga['nombre'])
+                print(f"Creando carpeta en {ruta_manga}")
+                if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
+                        os.mkdir(os.path.abspath(ruta_manga))
+
+                # Por cada capítulo se procede a descargar las imagenes
+                for n in range(1, (manga['total_capitulos'] + 1)):
+                        resultado = requests.get(url_base.format(n))
+                        sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
+                        imagenes = sopa.select(".wp-manga-chapter-img")
+                        capitulo = str(n).zfill(2)
+                        # Se crean las carpetas respectivas para cada capítulo
+                        if not(os.path.exists(os.path.join(ruta_manga, capitulo)) and os.path.isdir(os.path.join(ruta_manga, capitulo))):
+                             print(f"Creando carpeta para el capítulo {capitulo}")
+                             os.mkdir(os.path.join(ruta_manga, capitulo))
+                        print(f"Descargando imágenes del capítulo {capitulo}")
+                        # Variables para la barra de proceso
+                        inicial = 1
+                        final = len(imagenes)
+                        # Se muetra la barra de progreso
+                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                        for imagen in imagenes:
+                                # Se extrae la imagen (url y nombre)
+                                nombre_file = str(imagen['data-src'])
+                                nombre_file = nombre_file[nombre_file.rindex('/')+1:]
+                                
+                                # Se forma la ruta donde quedará finalmente
+                                ruta = os.path.join(ruta_manga, capitulo, nombre_file)
+                                ruta = os.path.abspath(ruta)
+                                
+                                # Se verifica si la imagen ya existía previamente
+                                if not(os.path.exists(ruta)):
+                                        # Se extrae la imagen de forma binaria de la web
+                                        imagen_save = requests.get(imagen['data-src'])
+                                
+                                        # Se guarda la imagen en disco
+                                        f = open (ruta, 'wb')
+                                        f.write(imagen_save.content)
+                                        f.close()
+
+                                        # Se muestra la barra de progreso
+                                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
                                 else:
-                                        print("Procesando manga: " + lArreglo[1] + " capitulo " + lArreglo[0])
-                                        print("Creando carpetas")
-                                        if (configurar(lArreglo[1].lstrip(" "), lArreglo[0]) == 1):
-                                                
-                                                strURL = lArreglo[2].replace(" ", "")
-                                                strURL = strURL.replace("\n", "")
-                                                strRutaCap = os.path.join(smg_Lib, lArreglo[1].lstrip(" "))
-                                                strRutaCap = strRutaCap.replace(" ", "_")
-                                                strRutaCap = os.path.join(strRutaCap, lArreglo[0].replace(" ", "_"))
-                                                
-                                                print("Comprobando...")
-                                                #Se crea la carpeta del capítulo
-                                                crearCarpetaCapitulo(strRutaCap)
-                                                #No olvidar que hay que agregar el n del cap a strUrl
-                                                intCapActual = int(lArreglo[0])
-                                                strURL = strURL + str(intCapActual) + "/"
-                                                procesar(strURL, strRutaCap)
-                                                print("...")
-                                        else:
-                                                print("Hubo un problema en el modulo de [configurar] para la creacion de carpetas")
-                        else:
-                                print("No se pudo procesar una de las lineas del archivo de configuracion. ¿Estan correctas las lineas?")
+                                        # No se descarga nada, pero igual se muestra avance en la barra
+                                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                inicial = inicial + 1
+                        print("")
+        print("")
         print("Finalizado. Presione [ENTER] para salir")
         input("> ")
         
