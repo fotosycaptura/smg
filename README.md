@@ -3,17 +3,44 @@ Manga downloader desde consola de fácil uso.
 
 Se puede usar desde GNU/Linux como también Windows.
 
-Requiere Python 3.x
+* Requiere Python 3.9
+* bs4
+* requests
+* json
 
-## Modo de uso
+```bash
+pip install -r requirements.txt
+```
 
-Solo debe de ejecutar smg.py para que genere el archivo de configuración en caso de no existir.
+## Archivo de configuración
+El archivo de configuración se debe de llamar **config.ini**.
+La estructura del archivo que se debe de crear para la configuración es la siguiente
+```ini
+; config.ini
+[DEFAULT]
+ruta_mangas = c:\Mangas\
 
-Este archivo contendrá un ejemplo de como debe de introducir los datos para su respectivo uso.
+[MANGAS]
+listado_mangas = [
+        {
+            "nombre" : "manga-genial",
+            "url_base" : "https://sitio-del-manga/manga-especifico/",
+            "total_capitulos" : 1
 
-El formato es:
+        }
+    ]
+```
+### [DEFAULT]
+**ruta_mangas**: indica la ruta física donde se guardarán los mangas. Esta ruta es absoluta y sin comillas.
 
-> 01, Nombre del Manga, http://....
+### [MANGAS]
+
+**listado_mangas**: es una lista en formato json que indica el nombre del manga, url y total de capítulos a descargar.
+
+## Consideraciones
+* Intente no utilizar caracteres especiales en el archivo de configuración.
+* Probado en Windows 10/11
+
 
 Cualquier duda o consulta no duden en consultar.
 
