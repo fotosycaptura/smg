@@ -84,33 +84,36 @@ def run():
                         # Variables para la barra de proceso
                         inicial = 1
                         final = len(imagenes)
-                        # Se muetra la barra de progreso
-                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                        for imagen in imagenes:
-                                # Se extrae la imagen (url y nombre)
-                                nombre_file = str(imagen['data-src'])
-                                nombre_file = nombre_file[nombre_file.rindex('/')+1:]
-                                
-                                # Se forma la ruta donde quedará finalmente
-                                ruta = os.path.join(ruta_manga, capitulo, nombre_file)
-                                ruta = os.path.abspath(ruta)
-                                
-                                # Se verifica si la imagen ya existía previamente
-                                if not(os.path.exists(ruta)):
-                                        # Se extrae la imagen de forma binaria de la web
-                                        imagen_save = requests.get(imagen['data-src'])
-                                
-                                        # Se guarda la imagen en disco
-                                        f = open (ruta, 'wb')
-                                        f.write(imagen_save.content)
-                                        f.close()
+                        if (final > 0):
+                                # Se muetra la barra de progreso
+                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                for imagen in imagenes:
+                                        # Se extrae la imagen (url y nombre)
+                                        nombre_file = str(imagen['data-src'])
+                                        nombre_file = nombre_file[nombre_file.rindex('/')+1:]
+                                        
+                                        # Se forma la ruta donde quedará finalmente
+                                        ruta = os.path.join(ruta_manga, capitulo, nombre_file)
+                                        ruta = os.path.abspath(ruta)
+                                        
+                                        # Se verifica si la imagen ya existía previamente
+                                        if not(os.path.exists(ruta)):
+                                                # Se extrae la imagen de forma binaria de la web
+                                                imagen_save = requests.get(imagen['data-src'])
+                                        
+                                                # Se guarda la imagen en disco
+                                                f = open (ruta, 'wb')
+                                                f.write(imagen_save.content)
+                                                f.close()
 
-                                        # Se muestra la barra de progreso
-                                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                else:
-                                        # No se descarga nada, pero igual se muestra avance en la barra
-                                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                inicial = inicial + 1
+                                                # Se muestra la barra de progreso
+                                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                        else:
+                                                # No se descarga nada, pero igual se muestra avance en la barra
+                                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                        inicial = inicial + 1
+                        else:
+                                print(f"No se encontraron imágenes para el capítulo {capitulo}")
                         print("")
         print("")
         print("Finalizado. Presione [ENTER] para salir")
