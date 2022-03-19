@@ -69,22 +69,22 @@ def run():
                 print(f"Creando carpeta en {ruta_manga}")
                 if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
                         os.mkdir(os.path.abspath(ruta_manga))
-
                 # Por cada capítulo se procede a descargar las imagenes
                 for n in range(1, (manga['total_capitulos'] + 1)):
                         resultado = requests.get(url_base.format(n))
                         sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
                         imagenes = sopa.select(".wp-manga-chapter-img")
                         capitulo = str(n).zfill(2)
-                        # Se crean las carpetas respectivas para cada capítulo
-                        if not(os.path.exists(os.path.join(ruta_manga, capitulo)) and os.path.isdir(os.path.join(ruta_manga, capitulo))):
-                             print(f"Creando carpeta para el capítulo {capitulo}")
-                             os.mkdir(os.path.join(ruta_manga, capitulo))
-                        print(f"Descargando imágenes del capítulo {capitulo}")
                         # Variables para la barra de proceso
                         inicial = 1
                         final = len(imagenes)
                         if (final > 0):
+                                # Se crean las carpetas respectivas para cada capítulo
+                                if not(os.path.exists(os.path.join(ruta_manga, capitulo)) and os.path.isdir(os.path.join(ruta_manga, capitulo))):
+                                        print(f"Creando carpeta para el capítulo {capitulo}")
+                                        os.mkdir(os.path.join(ruta_manga, capitulo))
+                                print(f"Descargando imágenes del capítulo {capitulo}")
+
                                 # Se muetra la barra de progreso
                                 printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
                                 for imagen in imagenes:
