@@ -1,0 +1,19 @@
+; config.ini
+[DEFAULT]
+ruta_mangas = c:\Mangas\
+
+[MANGAS]
+listado_mangas = [
+        {
+            "nombre" : "nombre-manga",
+            "url_base" : "https://url.manga/manga/nombre-manga",
+            "total_capitulos" : 40
+        },
+        {
+            "nombre" : "nombre-manga2",
+            "url_base" : "https://url.manga/manga/nombre-manga/",
+            "total_capitulos" : 4
+        }
+    ]
+    
+    
