@@ -24,9 +24,7 @@ ruta_mangas = c:\Mangas\
 listado_mangas = [
         {
             "nombre" : "manga-genial",
-            "url_base" : "https://sitio-del-manga/manga-especifico/",
-            "total_capitulos" : 1
-
+            "url_base" : "https://sitio-del-manga/manga-especifico/"
         }
     ]
 ```
@@ -35,7 +33,7 @@ listado_mangas = [
 
 ### [MANGAS]
 
-**listado_mangas**: es una lista en formato json que indica el nombre del manga, url y total de capítulos a descargar.
+**listado_mangas**: es una lista en formato json que indica el nombre del manga, url a descargar.
 
 ## Consideraciones
 * Intente no utilizar caracteres especiales en el archivo de configuración.
