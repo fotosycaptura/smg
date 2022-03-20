@@ -63,44 +63,45 @@ def run():
         print(f"Se encontraron {len(listado_mangas)} mangas para descargar...")
         print("Procesando...")
         for manga in listado_mangas:
-                url_base = manga['url_base'] + '{}/'
+                url_base = manga['url_base']
                 # Por cada manga se crea su carpeta, si es que no existía antes
                 ruta_manga = os.path.join(home_mangas, manga['nombre'])
-                print(f"Creando carpeta en {ruta_manga}")
+                #print(f"Creando carpeta en {ruta_manga}")
                 if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
                         os.mkdir(os.path.abspath(ruta_manga))
-                # Se obtiene el capítulo 1
-                resultado = requests.get(url_base.format(1))
-                sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
-                capitulo_siguiente = sopa.select(".next_page")
-
-                while (len(capitulo_siguiente) > 0):
-                        resultado = requests.get(capitulo_siguiente[0]['href'])
-                        texto = capitulo_siguiente[0]['href']
-                        sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
-                        imagenes = sopa.select(".wp-manga-chapter-img")
-                        lista = list(texto.split('/'))
-                        capitulo = str(lista[5]).zfill(2)
-
-                        # Variables para la barra de proceso
-                        inicial = 1
-                        final = len(imagenes)
-                        if (final > 0):
+                # Se obtienen los números de capítulos y sus urls
+                directorio_capitulos = requests.post(url_base + 'ajax/chapters/')
+                sopa_ini = bs4.BeautifulSoup(directorio_capitulos.text, 'lxml')
+                all_capitulos = sopa_ini.find_all('a')
+                listado = []
+                for item in all_capitulos:
+                        if (len(item['href']) > 1):
+                                listado.append([item.text.strip(), item['href']])
+                # Listado tendría el "número" de capítulo, y la url del capítulo
+                # Se procede con el ciclo para la descarga
+                inicial = 1
+                final = len(listado)
+                for capitulo, url_capitulo in listado:
+                        printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                        inicial = inicial + 1
+                        if (len(capitulo) > 0):
+                                resultado = requests.get(url_capitulo)
+                                sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
+                                capitulo_formateado = capitulo.zfill(3).replace('.', '-')
+                                imagenes = sopa.select(".wp-manga-chapter-img")
                                 # Se crean las carpetas respectivas para cada capítulo
-                                if not(os.path.exists(os.path.join(ruta_manga, capitulo)) and os.path.isdir(os.path.join(ruta_manga, capitulo))):
-                                        print(f"Creando carpeta para el capítulo {capitulo}")
-                                        os.mkdir(os.path.join(ruta_manga, capitulo))
-                                print(f"Descargando imágenes del capítulo {capitulo}")
-
-                                # Se muetra la barra de progreso
-                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                if not(os.path.exists(os.path.join(ruta_manga, capitulo_formateado)) and os.path.isdir(os.path.join(ruta_manga, capitulo_formateado))):
+                                        # print(f"Creando carpeta para el capítulo {capitulo_formateado}")
+                                        os.mkdir(os.path.join(ruta_manga, capitulo_formateado))
+                                # print(f"Descargando imágenes del capítulo {capitulo_formateado}")
+                                
                                 for imagen in imagenes:
                                         # Se extrae la imagen (url y nombre)
                                         nombre_file = str(imagen['data-src'])
                                         nombre_file = nombre_file[nombre_file.rindex('/')+1:]
                                         
                                         # Se forma la ruta donde quedará finalmente
-                                        ruta = os.path.join(ruta_manga, capitulo, nombre_file)
+                                        ruta = os.path.join(ruta_manga, capitulo_formateado, nombre_file)
                                         ruta = os.path.abspath(ruta)
                                         
                                         # Se verifica si la imagen ya existía previamente
@@ -112,17 +113,6 @@ def run():
                                                 f = open (ruta, 'wb')
                                                 f.write(imagen_save.content)
                                                 f.close()
-
-                                                # Se muestra la barra de progreso
-                                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                        else:
-                                                # No se descarga nada, pero igual se muestra avance en la barra
-                                                printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                        inicial = inicial + 1
-                        else:
-                                print(f"No se encontraron imágenes para el capítulo {capitulo}")
-                        print("")
-                        capitulo_siguiente = sopa.select(".next_page")
         print("")
         print("Finalizado. Presione [ENTER] para salir")
         input("> ")
