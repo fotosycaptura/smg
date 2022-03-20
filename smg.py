@@ -69,12 +69,19 @@ def run():
                 print(f"Creando carpeta en {ruta_manga}")
                 if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
                         os.mkdir(os.path.abspath(ruta_manga))
-                # Por cada capítulo se procede a descargar las imagenes
-                for n in range(1, (manga['total_capitulos'] + 1)):
-                        resultado = requests.get(url_base.format(n))
+                # Se obtiene el capítulo 1
+                resultado = requests.get(url_base.format(1))
+                sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
+                capitulo_siguiente = sopa.select(".next_page")
+
+                while (len(capitulo_siguiente) > 0):
+                        resultado = requests.get(capitulo_siguiente[0]['href'])
+                        texto = capitulo_siguiente[0]['href']
                         sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
                         imagenes = sopa.select(".wp-manga-chapter-img")
-                        capitulo = str(n).zfill(2)
+                        lista = list(texto.split('/'))
+                        capitulo = str(lista[5]).zfill(2)
+
                         # Variables para la barra de proceso
                         inicial = 1
                         final = len(imagenes)
@@ -115,10 +122,10 @@ def run():
                         else:
                                 print(f"No se encontraron imágenes para el capítulo {capitulo}")
                         print("")
+                        capitulo_siguiente = sopa.select(".next_page")
         print("")
         print("Finalizado. Presione [ENTER] para salir")
         input("> ")
-        
 
 # Para ejecutar desde la linea de comandos
 if __name__ == '__main__':
