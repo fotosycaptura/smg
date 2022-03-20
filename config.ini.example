@@ -6,13 +6,11 @@ ruta_mangas = c:\Mangas\
 listado_mangas = [
         {
             "nombre" : "nombre-manga",
-            "url_base" : "https://url.manga/manga/nombre-manga",
-            "total_capitulos" : 40
+            "url_base" : "https://url.manga/manga/nombre-manga"
         },
         {
             "nombre" : "nombre-manga2",
-            "url_base" : "https://url.manga/manga/nombre-manga/",
-            "total_capitulos" : 4
+            "url_base" : "https://url.manga/manga/nombre-manga/"
         }
     ]
     
