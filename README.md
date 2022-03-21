@@ -1,12 +1,32 @@
 # Smg
 Manga downloader desde consola de fácil uso.
 
-Se puede usar desde GNU/Linux como también Windows.
+Se puede usar desde GNU/Linux como también Windows (al menos en teoría XD)
 
-* Requiere Python 3.9
+## Modo de uso
+
+Para descargar un manga en particular:
+```bash
+smg.py url-manga
+```
+Para visualizar la ayuda 
+```bash
+smg.py -h
+```
+Para descargar un listado de mangas agregados en el config.ini:
+```bash
+smg.py -c
+```
+Esta aplicación requiere de:
+
+* Requiere Python 3.9 en adelante
 * bs4
 * requests
-* json
+* lxml
+* configparser
+
+
+Hay un archivo con los packages requeridos listos para instalar utilizando la orden:
 
 ```bash
 pip install -r requirements.txt
@@ -24,9 +44,7 @@ ruta_mangas = c:\Mangas\
 listado_mangas = [
         {
             "nombre" : "manga-genial",
-            "url_base" : "https://sitio-del-manga/manga-especifico/",
-            "total_capitulos" : 1
-
+            "url_base" : "https://sitio-del-manga/manga-especifico/"
         }
     ]
 ```
@@ -35,7 +53,7 @@ listado_mangas = [
 
 ### [MANGAS]
 
-**listado_mangas**: es una lista en formato json que indica el nombre del manga, url y total de capítulos a descargar.
+**listado_mangas**: es una lista en formato json que indica el nombre del manga, url a descargar.
 
 ## Consideraciones
 * Intente no utilizar caracteres especiales en el archivo de configuración.
