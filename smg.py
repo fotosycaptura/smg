@@ -4,7 +4,6 @@ import bs4
 import requests
 import os
 import json
-import re
 import sys, getopt
 """
 Creado en python 3.9
@@ -86,7 +85,7 @@ def get_capitulos(url_del_manga):
 def descargar_imagenes_del_capitulo(ruta_manga, url_del_capitulo, capitulo):
         resultado = requests.get(url_del_capitulo)
         sopa = bs4.BeautifulSoup(resultado.text, 'lxml')
-        capitulo_formateado = capitulo.zfill(3).replace('.', '-')
+        capitulo_formateado = capitulo.zfill(2).replace('.', '-')
 
         imagenes = sopa.select(".wp-manga-chapter-img")
         # Se crean las carpetas respectivas para cada capítulo
