@@ -149,7 +149,7 @@ def modo_de_uso():
 def descargar_solo(url_manga):
         if(url_manga.startswith("https://submanga.io/manga/")):
                 nombre_manga = url_manga[25:].replace("/", "")
-                print(nombre_manga)
+                print(f"Descargando {nombre_manga}")
                 ruta_manga = crear_carpeta_manga(nombre_manga)
                 lst_capitulos_del_manga = get_capitulos(url_manga)
                 # Se procede con el ciclo para la descarga
