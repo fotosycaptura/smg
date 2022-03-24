@@ -83,20 +83,21 @@ class submanga:
                         input("> ")
 
         def descargar_solo(self, home_mangas, url_manga):
+                Varios = utilerias.utilerias(self.version)
                 if(url_manga.startswith("https://submanga.io/manga/")):
                         nombre_manga = url_manga[25:].replace("/", "")
                         print(f"Descargando {nombre_manga}")
-                        ruta_manga = utilerias.crear_carpeta_manga(home_mangas, nombre_manga)
-                        lst_capitulos_del_manga = self.get_capitulos(url_manga)
+                        ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, nombre_manga)
+                        lst_capitulos_del_manga = self.__get_capitulos(url_manga)
                         lst_capitulos_del_manga.sort()
                         # Se procede con el ciclo para la descarga
                         inicial = 1
                         final = len(lst_capitulos_del_manga)
                         for capitulo, url_capitulo in lst_capitulos_del_manga:
-                                utilerias.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                Varios.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
                                 inicial = inicial + 1
                                 if (len(capitulo) > 0):
-                                        self.descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
+                                        self.__descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
                 print("")
                 print("Finalizado. Presione [ENTER] para salir")
                 input("> ")
