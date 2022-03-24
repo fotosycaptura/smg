@@ -59,27 +59,28 @@ class submanga:
                 """ 
                 Varios = utilerias.utilerias(self.version)
                 print(f"Se encontraron {len(self.listado_mangas)} mangas para descargar en config.ini...")
-                print("Procesando...")
-                for manga in self.listado_mangas:
-                        url_base = manga['url_base']
-                        # Por cada manga se crea su carpeta, si es que no existía antes
-                        
-                        ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, manga["nombre"])
-                        
-                        # Se obtienen los capítulos en formato["numero", "url"]
-                        listado_capitulos =  self.__get_capitulos(url_base)
-                        
-                        # Se procede con el ciclo para la descarga
-                        inicial = 1
-                        final = len(listado_capitulos)
-                        for capitulo, url_capitulo in listado_capitulos:
-                                Varios.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                inicial = inicial + 1
-                                if (len(capitulo) > 0):
-                                        self.__descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
-                print("")
-                print("Finalizado. Presione [ENTER] para salir")
-                input("> ")
+                if len(self.listado_mangas) > 0:
+                        print("Procesando...")
+                        for manga in self.listado_mangas:
+                                url_base = manga['url_base']
+                                # Por cada manga se crea su carpeta, si es que no existía antes
+                                
+                                ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, manga["nombre"])
+                                
+                                # Se obtienen los capítulos en formato["numero", "url"]
+                                listado_capitulos =  self.__get_capitulos(url_base)
+                                
+                                # Se procede con el ciclo para la descarga
+                                inicial = 1
+                                final = len(listado_capitulos)
+                                for capitulo, url_capitulo in listado_capitulos:
+                                        Varios.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                        inicial = inicial + 1
+                                        if (len(capitulo) > 0):
+                                                self.__descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
+                        print("")
+                        print("Finalizado. Presione [ENTER] para salir")
+                        input("> ")
 
         def descargar_solo(self, home_mangas, url_manga):
                 if(url_manga.startswith("https://submanga.io/manga/")):
