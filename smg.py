@@ -37,7 +37,7 @@ def verifica_argumentos(argv):
                         if opt == '-c':
                                 submanga.descargar_por_config()
                 if (len(args) > 0):
-                        submanga.descargar_solo(args[0])
+                        submanga.descargar_solo(home_mangas, args[0])
         except getopt.GetoptError:
                 print('smg.py -h para mayor información')
                 sys.exit(2)
