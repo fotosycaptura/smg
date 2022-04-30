@@ -2,9 +2,9 @@ import configparser
 import json
 import sys, getopt
 from varios import utilerias
-from scrap import submanga_io
+from scrap import submanga_io, leermanga_net
 """
-Creado en python 3.9
+Creado en python 3.10
 """
 
 """
@@ -37,7 +37,11 @@ def verifica_argumentos(argv):
                         if opt == '-c':
                                 submanga.descargar_por_config()
                 if (len(args) > 0):
-                        submanga.descargar_solo(home_mangas, args[0])
+                        if(args[0].startswith("https://submanga.io/manga/")):
+                                submanga.descargar_solo(home_mangas, args[0])
+                        elif(args[0].startswith("https://leermanga.net/manga/")):
+                                leerManga = leermanga_net.leermanga_net(smg_version, home_mangas, opciones, listado_mangas)
+                                leerManga.descargar_solo(home_mangas, args[0])
         except getopt.GetoptError:
                 print('smg.py -h para mayor información')
                 sys.exit(2)
