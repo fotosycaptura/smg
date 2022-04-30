@@ -51,3 +51,6 @@ class utilerias:
     def crear_carpeta_capitulo(self, ruta_manga, capitulo):
         if not(os.path.exists(os.path.join(ruta_manga, capitulo)) and os.path.isdir(os.path.join(ruta_manga, capitulo))):
                 os.mkdir(os.path.join(ruta_manga, capitulo))
+
+    def get_headers(self):
+        return {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
