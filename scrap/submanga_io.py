@@ -84,7 +84,7 @@ class submanga:
 
         def descargar_solo(self, home_mangas, url_manga):
                 Varios = utilerias.utilerias(self.version)
-                if(url_manga.startswith("https://submanga.io/manga/")):
+                if(url_manga.startswith("https://www3.tumangaonline.site/manga/")):
                         nombre_manga = url_manga[25:].replace("/", "")
                         print(f"Descargando {nombre_manga}")
                         ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, nombre_manga)

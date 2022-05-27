@@ -37,7 +37,7 @@ def verifica_argumentos(argv):
                         if opt == '-c':
                                 submanga.descargar_por_config()
                 if (len(args) > 0):
-                        if(args[0].startswith("https://submanga.io/manga/")):
+                        if(args[0].startswith("https://www3.tumangaonline.site/manga/")):
                                 submanga.descargar_solo(home_mangas, args[0])
                         elif(args[0].startswith("https://leermanga.net/manga/")):
                                 leerManga = leermanga_net.leermanga_net(smg_version, home_mangas, opciones, listado_mangas)
