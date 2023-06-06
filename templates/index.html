@@ -1,0 +1,26 @@
+{% extends './layout.html' %} {% block title%} Bienvenido {% endblock %} {%
+block body %}
+<div class="columns">
+  <div class="column">{{ contenido | markdown}}</div>
+</div>
+<div class="columns">
+  <div class="column">&nbsp;</div>
+</div>
+<div class="columns">
+  <div class="column">
+    <nav class="panel">
+      <p class="panel-heading">
+        Listado
+      </p>
+      {% for item in listado %}
+        <a class="panel-block" href='/ver?manga={{item[0]}}'>
+        <span class="panel-icon">  
+          <i class="fas fa-book" aria-hidden="true"></i>
+        </span>
+        {{item[0]}}
+        {% endfor %}
+      </a>
+    </nav>
+  </div>
+</div>
+{% endblock %}
