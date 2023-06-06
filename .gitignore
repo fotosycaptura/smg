@@ -3,5 +3,5 @@
 /varios/__pycache__
 /smg_config.txt
 /*.gitignore
-/Mngs
+/static/Mngs/*
 config.ini
