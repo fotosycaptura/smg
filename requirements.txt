@@ -2,3 +2,4 @@ bs4
 lxml
 requests
 configparser
+pip install flask_cors

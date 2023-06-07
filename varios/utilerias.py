@@ -42,7 +42,8 @@ class utilerias:
         Crea la carpeta que contendrá los capítulos del manga
         Y retorna la ruta física donde serán alojados
         """
-        ruta_manga = os.path.join(home_mangas, nombre_manga)
+        nombre_manga_filtrado = nombre_manga.replace('?', '')
+        ruta_manga = os.path.join(home_mangas, nombre_manga_filtrado)
         # print(f"Creando carpeta en {ruta_manga}")
         if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
                 os.mkdir(os.path.abspath(ruta_manga))
