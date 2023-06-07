@@ -43,6 +43,7 @@ class utilerias:
         Y retorna la ruta física donde serán alojados
         """
         nombre_manga_filtrado = nombre_manga.replace('?', '')
+        nombre_manga_filtrado = nombre_manga_filtrado.replace(':', '')
         ruta_manga = os.path.join(home_mangas, nombre_manga_filtrado)
         # print(f"Creando carpeta en {ruta_manga}")
         if not(os.path.exists(ruta_manga) and os.path.isdir(ruta_manga)):
