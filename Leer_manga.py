@@ -1,10 +1,29 @@
+import configparser
 from flask import Flask, url_for, render_template, request, redirect, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
 from flaskext.markdown import Markdown
 from flask_cors import CORS
 import os, pathlib, sys, html
 
-MANGA_FOLDER = os.path.abspath("./static/Mngs")
+"""
+Creado en python 3.11
+"""
+
+"""
+Configuración Interna
+
+Esta seccion es para la configuracion interna del programa
+smg_Lib, es la ruta o librería en donde están almacenados los mangas.
+Está definida en config.ini en el parámetro ruta_mangas
+"""
+config = configparser.ConfigParser()
+config.read('config.ini') 
+home_mangas = config['DEFAULT']['ruta_mangas']
+"""
+Fin de la definición de configuración
+"""
+
+MANGA_FOLDER = os.path.abspath(home_mangas)
 
 app = Flask(__name__, template_folder="templates")
 app.config['MANGA_FOLDER'] = MANGA_FOLDER
