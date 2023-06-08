@@ -10,7 +10,7 @@ block body %}
   <div class="column">
     <nav class="panel">
       <p class="panel-heading">
-        Listado
+        Listado. Mostrando {{listado|length}} mangas en total.
       </p>
       {% for item in listado %}
         <a class="panel-block" href='/ver?manga={{item[0]}}'>
