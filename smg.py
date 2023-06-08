@@ -48,6 +48,8 @@ def verifica_argumentos(argv):
                         elif(args[0].startswith('https://manhwa18.cc/webtoon/')):
                                 leer_manhwas_18 = manhwas_18.manhwas_18(smg_version, home_mangas, opciones, listado_mangas)
                                 leer_manhwas_18.descargar_solo(args[0])
+                        else:
+                                print('Conector no encontrado para esa URL.')
         except getopt.GetoptError:
                 print('smg.py -h para mayor información')
                 sys.exit(2)
