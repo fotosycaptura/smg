@@ -1,5 +1,8 @@
 /__pycache__
+/scrap/__pycache__
+/varios/__pycache__
 /smg_config.txt
 /*.gitignore
-/Mngs
+/static/Mngs/*
+/static/Nuevos/*
 config.ini

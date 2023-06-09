@@ -1,0 +1,25 @@
+{% extends './layout.html' %} {% block title%} {{contenido}} {% endblock %} {%
+    block body %}
+    <div class="row">
+      <div class="col">{{ contenido | markdown}}</div>
+    </div>
+    <div class="row">
+      <div class="col">&nbsp;</div>
+    </div>
+    
+    <div class="row">
+      <div class="col">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col text-center">
+        <h2>Visualizando</h2>
+      </div>
+    </div>
+        {% for item in listado %}
+            <div class="row">
+                <div class="col">
+                    <img src="{{item}}"/>
+                </div>
+            </div>
+        {% endfor %}
+    {% endblock %}
