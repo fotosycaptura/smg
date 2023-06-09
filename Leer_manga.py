@@ -19,6 +19,11 @@ Está definida en config.ini en el parámetro ruta_mangas
 config = configparser.ConfigParser()
 config.read('config.ini') 
 home_mangas = config['DEFAULT']['ruta_mangas']
+opciones = config.get('MANGAS','listado_mangas')
+try:
+    leidos = config.get('MANGAS', 'leidos')
+except:
+    pass
 """
 Fin de la definición de configuración
 """
@@ -76,6 +81,7 @@ def get_imagenes(nombre_manga):
             ruta_relativa =  nombre_manga + "/" + direct.name + "/"
             encodeado = html.unescape("Mngs/" + ruta_relativa + fichero.name)
             imagenes.append(encodeado)
+    imagenes.sort()
     return (imagenes)
 
 if __name__ == '__main__':
