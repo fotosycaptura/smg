@@ -14,7 +14,7 @@ Esta seccion es para la configuracion interna del programa
 smg_Lib, es la ruta o librería en donde están almacenados los mangas.
 Está definida en config.ini en el parámetro ruta_mangas
 """
-smg_version = "1.3.3"
+smg_version = "2023.06.09"
 config = configparser.ConfigParser()
 config.read('config.ini') 
 home_mangas = config['DEFAULT']['ruta_mangas']
