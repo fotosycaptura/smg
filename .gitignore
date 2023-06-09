@@ -5,4 +5,5 @@
 /*.gitignore
 /static/Mngs/*
 /static/Nuevos/*
+lab/*
 config.ini

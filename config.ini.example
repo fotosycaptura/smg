@@ -1,6 +1,6 @@
 ; config.ini
 [DEFAULT]
-ruta_mangas = c:\Mangas\
+ruta_mangas = ./static/mngs/
 
 [MANGAS]
 listado_mangas = [
