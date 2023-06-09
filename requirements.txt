@@ -2,3 +2,6 @@ bs4
 lxml
 requests
 configparser
+flask_cors
+flask.ext
+flask-markdown
