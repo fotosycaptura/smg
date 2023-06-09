@@ -2,7 +2,7 @@ import configparser
 import json
 import sys, getopt
 from varios import utilerias
-from scrap import submanga_io, leermanga_net, manhwas_net, manhwas_18
+from scrap import submanga_io, leermanga_net, manhwas_net, manhwas_18, tumanhwas_com
 """
 Creado en python 3.11
 """
@@ -48,6 +48,9 @@ def verifica_argumentos(argv):
                         elif(args[0].startswith('https://manhwa18.cc/webtoon/')):
                                 leer_manhwas_18 = manhwas_18.manhwas_18(smg_version, home_mangas, opciones, listado_mangas)
                                 leer_manhwas_18.descargar_solo(args[0])
+                        elif(args[0].startswith('https://tumanhwas.com/manga/')):
+                                tu_manhaws = tumanhwas_com.tumanhwas_com(smg_version, home_mangas, opciones, listado_mangas)
+                                tu_manhaws.descargar_solo(args[0])
                         else:
                                 print('Conector no encontrado para esa URL.')
         except getopt.GetoptError:
