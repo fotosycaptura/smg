@@ -12,7 +12,7 @@
     </div>
     <div class="row">
       <div class="col text-center">
-        <h2>Visualizando</h2>
+        <h2>Visualizando {{ listado|length }} imágenes</h2>
       </div>
     </div>
         {% for item in listado %}
@@ -21,5 +21,8 @@
                     <img src="{{item}}"/>
                 </div>
             </div>
+        {% if (listado|length > 300) %}
+        Son muchas
+        {% endif %}
         {% endfor %}
     {% endblock %}
