@@ -47,12 +47,13 @@ def principal():
 @app.route('/ver')
 def ver():
     page = request.args.get('manga', default = '*', type = str)
-    # print(str(page), file=sys.stderr)
+
     listado = get_imagenes(page)
     return render_template('ver.html', contenido=page, listado=listado) 
 
 @app.route('/<path:path>')
 def static_file(path):
+    print(path, file=sys.stderr)
     return app.send_static_file(path)
 
 @app.errorhandler(404)
@@ -66,25 +67,25 @@ def get_listado():
         return (lisado_directorios)
     for dirs in os.listdir(app.config["MANGA_FOLDER"]):
         if (dirs != 'Otros'):
-            lisado_directorios.append([dirs])
+            if (dirs != '.DS_Store'):
+                lisado_directorios.append([dirs])
     lisado_directorios.sort()
     return (lisado_directorios)
 
 def get_imagenes(nombre_manga):
     imagenes = []
     ruta = os.path.join(app.config['MANGA_FOLDER'], nombre_manga)
-    try:
-        directorio = pathlib.Path(ruta)
-        
-        for direct in directorio.iterdir():
+    directorio = pathlib.Path(ruta)
+    for direct in directorio.iterdir():
+        if (direct.name.find('.DS_Store') < 0):
             for fichero in direct.iterdir():
                 # La ruta para html debe de ser relativa, no absoluta
-                ruta_relativa =  nombre_manga + "/" + direct.name + "/"
-                encodeado = html.unescape(home_mangas + "/" + ruta_relativa + fichero.name)
-                imagenes.append(encodeado)
-        imagenes.sort()
-    except:
-        pass
+                if (fichero.name.find('.DS_Store') < 0):
+                    print(direct.name, file=sys.stderr)
+                    ruta_relativa =  nombre_manga + "/" + direct.name + "/"
+                    encodeado = html.unescape("Mngs/" + ruta_relativa + fichero.name)
+                    imagenes.append(encodeado)
+    imagenes.sort()
     return (imagenes)
 
 if __name__ == '__main__':
