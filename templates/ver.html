@@ -1,25 +1,45 @@
 {% extends './layout.html' %} {% block title%} {{contenido}} {% endblock %} {%
     block body %}
-    <div class="row">
-      <div class="col">{{ contenido | markdown}}</div>
-    </div>
-    <div class="row">
-      <div class="col">&nbsp;</div>
+    <div class="columns">
+      <div class="column">{{ contenido | markdown}}</div>
     </div>
     
-    <div class="row">
-      <div class="col">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col text-center">
-        <h2>Visualizando {{ listado|length }} imágenes</h2>
+    <div class="columns">
+      <div class="column text-center">
+        <h2>Visualizando {{ listado[pagina]|length }} imágenes</h2>
+        {% if (listado|length > 1) %}
+            <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+              <ul class="pagination-list">
+                {% for page in range(0, listado|length, 1) %}
+                {% if pagina == page %}
+                  <li><a href="/ver?manga={{contenido}}&page={{page}}" class="pagination-link is-current" aria-label="Goto page {{page}}">{{page + 1}}</a></li>
+                {% else %}
+                  <li><a href="/ver?manga={{contenido}}&page={{page}}" class="pagination-link" aria-label="Goto page {{page}}">{{page + 1}}</a></li>
+                  {%endif%}
+                {% endfor %}
+              </ul>
+            </nav>
+        {% endif %}
       </div>
     </div>
-        {% for item in listado %}
-            <div class="row">
-                <div class="col">
-                    <img src="{{item}}"/>
-                </div>
+    {% for item in listado[pagina] %}
+        <div class="columns">
+            <div class="column">
+                <img src="{{item}}"/>
             </div>
+        </div>
+    {% endfor %}
+    {% if (listado|length > 1) %}
+    <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+      <ul class="pagination-list">
+        {% for page in range(0, listado|length, 1) %}
+        {% if pagina == page %}
+          <li><a href="/ver?manga={{contenido}}&page={{page}}" class="pagination-link is-current" aria-label="Goto page {{page}}">{{page + 1}}</a></li>
+        {% else %}
+          <li><a href="/ver?manga={{contenido}}&page={{page}}" class="pagination-link" aria-label="Goto page {{page}}">{{page + 1}}</a></li>
+          {%endif%}
         {% endfor %}
-    {% endblock %}
+      </ul>
+    </nav>
+    {% endif %}
+{% endblock %}

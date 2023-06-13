@@ -49,7 +49,8 @@ def ver():
     page = request.args.get('manga', default = '*', type = str)
 
     listado = get_imagenes(page)
-    return render_template('ver.html', contenido=page, listado=listado) 
+    pagina = request.args.get('page', default=0, type=int)
+    return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
 
 @app.route('/<path:path>')
 def static_file(path):
@@ -86,7 +87,7 @@ def bl_filtrar(str) -> bool:
 
 def get_imagenes(nombre_manga):
     imagenes = []
-    
+    paginacion = []
     ruta = os.path.join(app.config['MANGA_FOLDER'], nombre_manga)
     directorio = pathlib.Path(ruta)
     for direct in directorio.iterdir():
@@ -98,16 +99,21 @@ def get_imagenes(nombre_manga):
                         ruta_relativa =  nombre_manga + "/" + direct.name + "/"
                         encodeado = html.unescape("mngs/" + ruta_relativa + fichero.name)
                         imagenes.append(encodeado)
+                imagenes_ordenadas = natsorted(imagenes, key=str)
+                paginacion.append(imagenes_ordenadas)
+                imagenes = []
         else:
             # La ruta para html debe de ser relativa, no absoluta
             if (bl_filtrar(direct.name)):
                 ruta_relativa =  nombre_manga + "/" + direct.name
                 encodeado = html.unescape("mngs/" + ruta_relativa)
                 imagenes.append(encodeado)
-    imagenes.sort()
-    imagenes_ordenadas = natsorted(imagenes, key=str)
-
-    return (imagenes_ordenadas)
+    if (len(imagenes) > 0):
+        imagenes_ordenadas = natsorted(imagenes, key=str)
+        paginacion.append(imagenes_ordenadas)
+    paginacion.sort()
+    #print(paginacion, file=sys.stderr)
+    return (paginacion)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
