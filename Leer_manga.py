@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from flaskext.markdown import Markdown
 from flask_cors import CORS
 import os, pathlib, sys, html
-
+from natsort import natsorted
 """
 Creado en python 3.11
 """
@@ -62,16 +62,17 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 def get_listado():
-    lisado_directorios = []
+    listado_directorios = []
     if not os.path.exists(app.config['MANGA_FOLDER']):
-        return (lisado_directorios)
+        return (listado_directorios)
     for dirs in os.listdir(app.config["MANGA_FOLDER"]):
         if (dirs != 'Otros'):
             if (dirs != '.DS_Store'):
                 if (dirs.find('.zip') < 0):
-                    lisado_directorios.append([dirs])
-    lisado_directorios.sort()
-    return (lisado_directorios)
+                    listado_directorios.append([dirs])
+    listado_directorios.sort()
+    listado_directorios_ordenados = natsorted(listado_directorios, key=str)
+    return (listado_directorios_ordenados)
 
 def bl_filtrar(str) -> bool:
     """
@@ -98,7 +99,9 @@ def get_imagenes(nombre_manga):
                     encodeado = html.unescape("Mngs/" + ruta_relativa + fichero.name)
                     imagenes.append(encodeado)
     imagenes.sort()
-    return (imagenes)
+    imagenes_ordenadas = natsorted(imagenes, key=str)
+
+    return (imagenes_ordenadas)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
