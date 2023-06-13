@@ -78,7 +78,7 @@ def bl_filtrar(str) -> bool:
     """
     Sirve para filtrar por aquellos elementos dentro del directorio que no sean imagenes
     """
-    filtro = ['.zip', '.DS_Store', '.info', '.rar']
+    filtro = ['.zip', '.DS_Store', '.info', '.rar', '.db']
     for item in filtro:
         if str.find(item) > 0:
             return False
@@ -90,14 +90,20 @@ def get_imagenes(nombre_manga):
     ruta = os.path.join(app.config['MANGA_FOLDER'], nombre_manga)
     directorio = pathlib.Path(ruta)
     for direct in directorio.iterdir():
-
-        if (bl_filtrar(direct.name)):
-            for fichero in direct.iterdir():
-                # La ruta para html debe de ser relativa, no absoluta
-                if (bl_filtrar(fichero.name)):
-                    ruta_relativa =  nombre_manga + "/" + direct.name + "/"
-                    encodeado = html.unescape("Mngs/" + ruta_relativa + fichero.name)
-                    imagenes.append(encodeado)
+        if os.path.isdir(direct):
+            if (bl_filtrar(direct.name)):
+                for fichero in direct.iterdir():
+                    # La ruta para html debe de ser relativa, no absoluta
+                    if (bl_filtrar(fichero.name)):
+                        ruta_relativa =  nombre_manga + "/" + direct.name + "/"
+                        encodeado = html.unescape("mngs/" + ruta_relativa + fichero.name)
+                        imagenes.append(encodeado)
+        else:
+            # La ruta para html debe de ser relativa, no absoluta
+            if (bl_filtrar(direct.name)):
+                ruta_relativa =  nombre_manga + "/" + direct.name
+                encodeado = html.unescape("mngs/" + ruta_relativa)
+                imagenes.append(encodeado)
     imagenes.sort()
     imagenes_ordenadas = natsorted(imagenes, key=str)
 
