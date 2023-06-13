@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from flaskext.markdown import Markdown
 from flask_cors import CORS
 import os, pathlib, sys, html
-
+from natsort import natsorted
 """
 Creado en python 3.11
 """
@@ -49,7 +49,8 @@ def ver():
     page = request.args.get('manga', default = '*', type = str)
 
     listado = get_imagenes(page)
-    return render_template('ver.html', contenido=page, listado=listado) 
+    pagina = request.args.get('page', default=0, type=int)
+    return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
 
 @app.route('/<path:path>')
 def static_file(path):
@@ -62,31 +63,57 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 def get_listado():
-    lisado_directorios = []
+    listado_directorios = []
     if not os.path.exists(app.config['MANGA_FOLDER']):
-        return (lisado_directorios)
+        return (listado_directorios)
     for dirs in os.listdir(app.config["MANGA_FOLDER"]):
         if (dirs != 'Otros'):
             if (dirs != '.DS_Store'):
-                lisado_directorios.append([dirs])
-    lisado_directorios.sort()
-    return (lisado_directorios)
+                if (dirs.find('.zip') < 0):
+                    listado_directorios.append([dirs])
+    listado_directorios.sort()
+    listado_directorios_ordenados = natsorted(listado_directorios, key=str)
+    return (listado_directorios_ordenados)
+
+def bl_filtrar(str) -> bool:
+    """
+    Sirve para filtrar por aquellos elementos dentro del directorio que no sean imagenes
+    """
+    filtro = ['.zip', '.DS_Store', '.info', '.rar', '.db']
+    for item in filtro:
+        if str.find(item) > 0:
+            return False
+    return True
 
 def get_imagenes(nombre_manga):
     imagenes = []
+    paginacion = []
     ruta = os.path.join(app.config['MANGA_FOLDER'], nombre_manga)
     directorio = pathlib.Path(ruta)
     for direct in directorio.iterdir():
-        if (direct.name.find('.DS_Store') < 0):
-            for fichero in direct.iterdir():
-                # La ruta para html debe de ser relativa, no absoluta
-                if (fichero.name.find('.DS_Store') < 0):
-                    print(direct.name, file=sys.stderr)
-                    ruta_relativa =  nombre_manga + "/" + direct.name + "/"
-                    encodeado = html.unescape("Mngs/" + ruta_relativa + fichero.name)
-                    imagenes.append(encodeado)
-    imagenes.sort()
-    return (imagenes)
+        if os.path.isdir(direct):
+            if (bl_filtrar(direct.name)):
+                for fichero in direct.iterdir():
+                    # La ruta para html debe de ser relativa, no absoluta
+                    if (bl_filtrar(fichero.name)):
+                        ruta_relativa =  nombre_manga + "/" + direct.name + "/"
+                        encodeado = html.unescape("mngs/" + ruta_relativa + fichero.name)
+                        imagenes.append(encodeado)
+                imagenes_ordenadas = natsorted(imagenes, key=str)
+                paginacion.append(imagenes_ordenadas)
+                imagenes = []
+        else:
+            # La ruta para html debe de ser relativa, no absoluta
+            if (bl_filtrar(direct.name)):
+                ruta_relativa =  nombre_manga + "/" + direct.name
+                encodeado = html.unescape("mngs/" + ruta_relativa)
+                imagenes.append(encodeado)
+    if (len(imagenes) > 0):
+        imagenes_ordenadas = natsorted(imagenes, key=str)
+        paginacion.append(imagenes_ordenadas)
+    paginacion.sort()
+    #print(paginacion, file=sys.stderr)
+    return (paginacion)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
