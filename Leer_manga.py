@@ -79,9 +79,9 @@ def bl_filtrar(str) -> bool:
     """
     Sirve para filtrar por aquellos elementos dentro del directorio que no sean imagenes
     """
-    filtro = ['.zip', '.DS_Store', '.info', '.rar', '.db']
+    filtro = ['.zip', '.DS_Store', '.info', '.rar', '.db', '#']
     for item in filtro:
-        if str.find(item) > 0:
+        if str.find(item) >= 0:
             return False
     return True
 
@@ -97,7 +97,7 @@ def get_imagenes(nombre_manga):
                     # La ruta para html debe de ser relativa, no absoluta
                     if (bl_filtrar(fichero.name)):
                         ruta_relativa =  nombre_manga + "/" + direct.name + "/"
-                        encodeado = html.unescape("mngs/" + ruta_relativa + fichero.name)
+                        encodeado = html.unescape(home_mangas + "/" + ruta_relativa + fichero.name)
                         imagenes.append(encodeado)
                 imagenes_ordenadas = natsorted(imagenes, key=str)
                 paginacion.append(imagenes_ordenadas)
@@ -106,7 +106,7 @@ def get_imagenes(nombre_manga):
             # La ruta para html debe de ser relativa, no absoluta
             if (bl_filtrar(direct.name)):
                 ruta_relativa =  nombre_manga + "/" + direct.name
-                encodeado = html.unescape("mngs/" + ruta_relativa)
+                encodeado = html.unescape(home_mangas + "/" + ruta_relativa)
                 imagenes.append(encodeado)
     if (len(imagenes) > 0):
         imagenes_ordenadas = natsorted(imagenes, key=str)
