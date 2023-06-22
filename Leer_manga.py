@@ -63,6 +63,10 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 def get_listado():
+    """
+    Obtiene las carpetas dentro del directorio especificado en MMANGA_FOLDER
+    y estos serán usados como nombres de los mangas.
+    """
     listado_directorios = []
     if not os.path.exists(app.config['MANGA_FOLDER']):
         return (listado_directorios)
@@ -86,6 +90,11 @@ def bl_filtrar(str) -> bool:
     return True
 
 def get_imagenes(nombre_manga):
+    """
+    Obtiene las imagenes de cada subcarpeta especificada en la carpeta "nombre_manga"
+    Se extraen las imagenes y se ordenan en orden correlativo natural.
+    Se dejan fuera aquellos archivos que están especificados en bl_filtrar
+    """
     imagenes = []
     paginacion = []
     ruta = os.path.join(app.config['MANGA_FOLDER'], nombre_manga)
