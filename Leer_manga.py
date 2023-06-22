@@ -20,10 +20,7 @@ config = configparser.ConfigParser()
 config.read('config.ini') 
 home_mangas = config['DEFAULT']['ruta_mangas']
 opciones = config.get('MANGAS','listado_mangas')
-try:
-    leidos = config.get('MANGAS', 'leidos')
-except:
-    pass
+LEIDOS = config.get('LEIDOS', 'listado')
 """
 Fin de la definición de configuración
 """
@@ -32,6 +29,7 @@ MANGA_FOLDER = os.path.abspath(home_mangas)
 
 app = Flask(__name__, template_folder="templates")
 app.config['MANGA_FOLDER'] = MANGA_FOLDER
+app.config['MANGAS_LEIDOS'] = LEIDOS
 CORS(app)
 
 Markdown(app)
@@ -62,6 +60,15 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
+def bl_si_leido(str1, lst) -> bool:
+    """
+    Se encarga de revisar si existe el nombre del manga str1 en lst
+    Regresa False si es encontrado para indicar que no lo incluya más adelante
+    """
+    if str1 in lst:
+        return False
+    return True
+
 def get_listado():
     """
     Obtiene las carpetas dentro del directorio especificado en MMANGA_FOLDER
@@ -74,7 +81,8 @@ def get_listado():
         if (dirs != 'Otros'):
             if (dirs != '.DS_Store'):
                 if (dirs.find('.zip') < 0):
-                    listado_directorios.append([dirs])
+                    if bl_si_leido(dirs, app.config['MANGAS_LEIDOS']):
+                        listado_directorios.append([dirs])
     listado_directorios.sort()
     listado_directorios_ordenados = natsorted(listado_directorios, key=str)
     return (listado_directorios_ordenados)
