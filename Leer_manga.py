@@ -59,7 +59,7 @@ def ver():
 
     listado = get_imagenes(page)
     pagina = request.args.get('page', default=0, type=int)
-    return render_template('ver.html', contenido='## '+page, listado=listado, pagina=pagina) 
+    return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
 
 @app.route('/marcar')
 def marcar_leido():
