@@ -1,3 +1,3 @@
 # Bienvenido
 
-Aplicación personal para comprobación de lectura.
+Aplicación personal para lectura de mangas y/o manhwas.

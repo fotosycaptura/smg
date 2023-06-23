@@ -58,26 +58,29 @@ class submanga:
                 En esta version, se corrigen los espacios para las carpetas dentro del manga, reemplazandolos con guiones bajos _ 
                 """ 
                 Varios = utilerias.utilerias(self.version)
-                print(f"Se encontraron {len(self.listado_mangas)} mangas para descargar en config.ini...")
+                print(f"Opción deprecada para este conector. Se encontraron {len(self.listado_mangas)} mangas para descargar en config.ini...")
                 if len(self.listado_mangas) > 0:
                         print("Procesando...")
                         for manga in self.listado_mangas:
                                 url_base = manga['url_base']
-                                # Por cada manga se crea su carpeta, si es que no existía antes
-                                
-                                ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, manga["nombre"])
-                                
-                                # Se obtienen los capítulos en formato["numero", "url"]
-                                listado_capitulos =  self.__get_capitulos(url_base)
-                                
-                                # Se procede con el ciclo para la descarga
-                                inicial = 1
-                                final = len(listado_capitulos)
-                                for capitulo, url_capitulo in listado_capitulos:
-                                        Varios.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
-                                        inicial = inicial + 1
-                                        if (len(capitulo) > 0):
-                                                self.__descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
+                                if (url_base.startswith("https://www3.tumangaonline.site/manga/")):
+                                        # Por cada manga se crea su carpeta, si es que no existía antes
+                                        
+                                        ruta_manga = Varios.crear_carpeta_manga(self.home_mangas, manga["nombre"])
+                                        
+                                        # Se obtienen los capítulos en formato["numero", "url"]
+                                        listado_capitulos =  self.__get_capitulos(url_base)
+                                        
+                                        # Se procede con el ciclo para la descarga
+                                        inicial = 1
+                                        final = len(listado_capitulos)
+                                        for capitulo, url_capitulo in listado_capitulos:
+                                                Varios.printProgressBar(inicial, final, prefix = 'Descarga:', suffix = 'Completado', length = 30)
+                                                inicial = inicial + 1
+                                                if (len(capitulo) > 0):
+                                                        self.__descargar_imagenes_del_capitulo(ruta_manga, url_capitulo, capitulo)
+                                else:
+                                        print(f'Url ({url_base}) no procesada.')
                         print("")
                         print("Finalizado. Presione [ENTER] para salir")
                         input("> ")

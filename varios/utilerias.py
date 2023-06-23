@@ -34,7 +34,7 @@ class utilerias:
         print('Permite descargar un manga de ---Manga')
         print('Modo de uso:')
         print('smg.py url-manga     - Descarga el manga en cuestión.')
-        print('smg.py -c            - Descarga listado de mangas definidos en config.ini')
+        print('smg.py -c            - Descarga listado de mangas definidos en config.ini (Deprecado)')
         print('smg.py -h            - Muestra esta ayuda.')
 
     def crear_carpeta_manga(self, home_mangas, nombre_manga) -> str:

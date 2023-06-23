@@ -47,6 +47,11 @@ listado_mangas = [
             "url_base" : "https://sitio-del-manga/manga-especifico/"
         }
     ]
+[LEIDOS]
+listado = [
+    "nombre-manga-1",
+    "nombre-manga-2"
+    ]
 ```
 ### [DEFAULT]
 **ruta_mangas**: indica la ruta física donde se guardarán los mangas. Esta ruta es absoluta y sin comillas.
@@ -55,10 +60,13 @@ listado_mangas = [
 
 **listado_mangas**: es una lista en formato json que indica el nombre del manga, url a descargar.
 
+### [LEIDOS]
+**listado**: es una lista - array - que indica el nombre del manga ya leído, para no tener que desplegarlo en el módulo de __Leer_manga.py__
 ## Consideraciones
 * Intente no utilizar caracteres especiales en el archivo de configuración.
 * Probado en Windows 10/11
-
+* Probado en OSX
+* Probado en GNU/Linux
 
 Cualquier duda o consulta no duden en consultar.
 
