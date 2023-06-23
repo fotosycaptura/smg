@@ -41,6 +41,7 @@ def principal():
     with open("./markdown/bienvenido.md", "r", encoding="utf-8") as f:
         content = f.read()
     listado = get_listado()
+    content = content + " Desplegando mangas sin leer."
     return render_template('index.html', contenido=content, listado=listado)
 
 @app.route('/todos')
@@ -49,6 +50,7 @@ def todos():
     with open("./markdown/bienvenido.md", "r", encoding="utf-8") as f:
         content = f.read()
     listado = get_listado_todos()
+    content = content + " Desplegando **todos** los mangas."
     return render_template('index.html', contenido=content, listado=listado)
 
 @app.route('/ver')
