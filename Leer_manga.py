@@ -63,10 +63,12 @@ def acercade():
 @app.route('/ver')
 def ver():
     page = request.args.get('manga', default = '*', type = str)
-
-    listado = get_imagenes(page)
-    pagina = request.args.get('page', default=0, type=int)
-    return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
+    if len(page) > 2:
+        listado = get_imagenes(page)
+        pagina = request.args.get('page', default=0, type=int)
+        return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
+    else:
+        return redirect('/')
 
 @app.route('/marcar')
 def marcar_leido():
