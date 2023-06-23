@@ -53,6 +53,13 @@ def todos():
     content = content + " Desplegando **todos** los mangas."
     return render_template('index.html', contenido=content, listado=listado)
 
+@app.route('/acerca-de')
+def acercade():
+    content = ""
+    with open("./markdown/acercade.md", "r", encoding="utf-8") as f:
+        content = f.read()
+    return render_template('acercade.html', contenido=content)
+
 @app.route('/ver')
 def ver():
     page = request.args.get('manga', default = '*', type = str)
