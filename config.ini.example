@@ -13,5 +13,6 @@ listado_mangas = [
             "url_base" : "https://url.manga/manga/nombre-manga/"
         }
     ]
-    
+[LEIDOS]
+listado = ['manga1', 'manga2']
     
