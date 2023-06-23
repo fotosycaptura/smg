@@ -1,5 +1,10 @@
 {% extends './layout.html' %} {% block title%} Bienvenido {% endblock %} {%
     block body %}
     <div class="content">{{ contenido | markdown }}</div>
+    <div class="container">
+    <figure class="image is-48x48">
+        <img class="is-rounded" src="{{ url_for('static', filename='images/logo.png') }}">
+    </figure>
+    </div>
     {% endblock %}
     
