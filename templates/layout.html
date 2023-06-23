@@ -19,8 +19,9 @@
     <nav class="navbar is-info" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
           <img src="{{ url_for('static', filename='images/logo.png') }}">
-          <a class="navbar-item" href="/">Inicio</a>
-          <a class="navbar-item" href="/todos">Todos</a>
+          <a class="navbar-item {% if url_for(request.endpoint) == '/' %} is-active {% endif %}" href="/">Inicio</a>
+          <a class="navbar-item {% if url_for(request.endpoint) == '/todos' %} is-active {% endif %}" href="/todos">Todos</a>
+          <a class="navbar-item {% if url_for(request.endpoint) == '/acerca-de' %} is-active {% endif %}" href="/acerca-de">Acerca de...</a>
       </div>
     </nav>
     <div class="content">
