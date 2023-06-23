@@ -43,6 +43,14 @@ def principal():
     listado = get_listado()
     return render_template('index.html', contenido=content, listado=listado)
 
+@app.route('/todos')
+def todos():
+    content = ""
+    with open("./markdown/bienvenido.md", "r", encoding="utf-8") as f:
+        content = f.read()
+    listado = get_listado_todos()
+    return render_template('index.html', contenido=content, listado=listado)
+
 @app.route('/ver')
 def ver():
     page = request.args.get('manga', default = '*', type = str)
@@ -112,6 +120,8 @@ def get_listado():
     """
     Obtiene las carpetas dentro del directorio especificado en MMANGA_FOLDER
     y estos serán usados como nombres de los mangas.
+    Una vez leídos, filtra aquellos que ya se encuentran en el config.ini para
+    no desplegar aquellos mencionados en listado dentro de LEIDOS.
     """
     listado_directorios = []
     if not os.path.exists(app.config['MANGA_FOLDER']):
@@ -122,6 +132,23 @@ def get_listado():
                 if (dirs.find('.zip') < 0):
                     if bl_si_leido(dirs, app.config['MANGAS_LEIDOS']):
                         listado_directorios.append([dirs])
+    listado_directorios.sort()
+    listado_directorios_ordenados = natsorted(listado_directorios, key=str)
+    return (listado_directorios_ordenados)
+
+def get_listado_todos():
+    """
+    Obtiene las carpetas dentro del directorio especificado en MMANGA_FOLDER
+    y estos serán usados como nombres de los mangas.
+    """
+    listado_directorios = []
+    if not os.path.exists(app.config['MANGA_FOLDER']):
+        return (listado_directorios)
+    for dirs in os.listdir(app.config["MANGA_FOLDER"]):
+        if (dirs != 'Otros'):
+            if (dirs != '.DS_Store'):
+                if (dirs.find('.zip') < 0):
+                    listado_directorios.append([dirs])
     listado_directorios.sort()
     listado_directorios_ordenados = natsorted(listado_directorios, key=str)
     return (listado_directorios_ordenados)
