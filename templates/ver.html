@@ -1,9 +1,9 @@
 {% extends './layout.html' %} {% block title%} {{contenido}} {% endblock %} {%
     block body %}
     <div class="columns">
-      <div class="column">{{ contenido | markdown}}</div>
+      <div class="column">{{ contenido | markdown}} <a href="/marcar?pagina={{contenido}}" class="button is-small is-info is-outlined"><span>Marcar como leído</span> &nbsp;<i class="fa fa-external-link-alt"></i></a></div>
     </div>
-    <a href="/marcar?pagina={{contenido}}" class="button is-light"><i class="far fa-window-close"></i></a>
+    
     <div class="columns">
       <div class="column text-center">
         <h2>Visualizando {{ listado[pagina]|length }} imágenes</h2>
