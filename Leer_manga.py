@@ -5,6 +5,7 @@ from flaskext.markdown import Markdown
 from flask_cors import CORS
 import os, pathlib, sys, html
 from natsort import natsorted
+import json
 """
 Creado en python 3.11
 """
@@ -49,6 +50,44 @@ def ver():
     listado = get_imagenes(page)
     pagina = request.args.get('page', default=0, type=int)
     return render_template('ver.html', contenido=page, listado=listado, pagina=pagina) 
+
+@app.route('/marcar')
+def marcar_leido():
+    """
+    Encargado de marcar el manga como leído para quitar de la lista
+    """
+    # Obtiene el parámetro de pagina
+
+    page = request.args.get('pagina', default = '*', type = str)
+
+    # Lee configuración del archivo.
+    config = configparser.ConfigParser()
+    config.read('config.ini') 
+    home_mangas = config['DEFAULT']['ruta_mangas']
+    listado_mangas = config.get('MANGAS','listado_mangas')
+    listado_leidos = json.loads(config.get('LEIDOS', 'listado'))
+    
+    # Se agrega el nuevo manga "ya leído"
+
+    listado_leidos.append(page)
+
+    # Se setea valores que irán al archivo de configuración    
+    config['DEFAULT']['ruta_mangas'] = home_mangas
+    config['MANGAS']['listado_mangas'] = listado_mangas
+    config['LEIDOS']['listado'] = json.dumps(listado_leidos)
+
+    # Se guarda en el archivo de configuración.
+    with open('config.ini', 'w') as configfile:    # save
+        config.write(configfile)
+    
+    app.config['MANGAS_LEIDOS']
+    config.read('config.ini') 
+    home_mangas = config['DEFAULT']['ruta_mangas']
+    opciones = config.get('MANGAS','listado_mangas')
+    LEIDOS = config.get('LEIDOS', 'listado')
+    app.config['MANGAS_LEIDOS'] = LEIDOS
+    # Se redirecciona a la raíz del sitio.
+    return redirect('/')
 
 @app.route('/<path:path>')
 def static_file(path):
