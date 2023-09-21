@@ -6,6 +6,7 @@ from flask_cors import CORS
 import os, pathlib, sys, html
 from natsort import natsorted
 import json
+from flask_sqlalchemy import SQLAlchemy
 """
 Creado en python 3.11
 """
@@ -21,7 +22,7 @@ config = configparser.ConfigParser()
 config.read('config.ini') 
 home_mangas = config['DEFAULT']['ruta_mangas']
 opciones = config.get('MANGAS','listado_mangas')
-LEIDOS = config.get('LEIDOS', 'listado')
+DB = config.get('DB', 'ruta_DB')
 """
 Fin de la definición de configuración
 """
@@ -30,28 +31,41 @@ MANGA_FOLDER = os.path.abspath(home_mangas)
 
 app = Flask(__name__, template_folder="templates")
 app.config['MANGA_FOLDER'] = MANGA_FOLDER
-app.config['MANGAS_LEIDOS'] = LEIDOS
-CORS(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB
 
+db = SQLAlchemy(app)
+
+class Manga(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    carpeta = db.Column(db.String(255))
+    leido = db.Column(db.Boolean)
+
+with app.app_context():
+    db.create_all()
+
+CORS(app)
 Markdown(app)
 
 @app.route('/')
 def principal():
+    manga = Manga.query.all()
     content = ""
     with open("./markdown/bienvenido.md", "r", encoding="utf-8") as f:
         content = f.read()
     listado = get_listado()
     content = content + " Desplegando mangas sin leer."
-    return render_template('index.html', contenido=content, listado=listado)
+    return render_template('index.html', contenido=content, listado=listado, manga_db = manga)
 
 @app.route('/todos')
 def todos():
+    manga = Manga.query.all()
     content = ""
     with open("./markdown/bienvenido.md", "r", encoding="utf-8") as f:
         content = f.read()
     listado = get_listado_todos()
     content = content + " Desplegando **todos** los mangas."
-    return render_template('index.html', contenido=content, listado=listado)
+    return render_template('index.html', contenido=content, listado=listado, manga_db = manga)
 
 @app.route('/acerca-de')
 def acercade():
@@ -79,32 +93,10 @@ def marcar_leido():
 
     page = request.args.get('pagina', default = '*', type = str)
 
-    # Lee configuración del archivo.
-    config = configparser.ConfigParser()
-    config.read('config.ini') 
-    home_mangas = config['DEFAULT']['ruta_mangas']
-    listado_mangas = config.get('MANGAS','listado_mangas')
-    listado_leidos = json.loads(config.get('LEIDOS', 'listado'))
-    
-    # Se agrega el nuevo manga "ya leído"
-
-    listado_leidos.append(page)
-
-    # Se setea valores que irán al archivo de configuración    
-    config['DEFAULT']['ruta_mangas'] = home_mangas
-    config['MANGAS']['listado_mangas'] = listado_mangas
-    config['LEIDOS']['listado'] = json.dumps(listado_leidos)
-
-    # Se guarda en el archivo de configuración.
-    with open('config.ini', 'w') as configfile:    # save
-        config.write(configfile)
-    
-    app.config['MANGAS_LEIDOS']
-    config.read('config.ini') 
-    home_mangas = config['DEFAULT']['ruta_mangas']
-    opciones = config.get('MANGAS','listado_mangas')
-    LEIDOS = config.get('LEIDOS', 'listado')
-    app.config['MANGAS_LEIDOS'] = LEIDOS
+    # Inserta en la base de datos el manga
+    manga = Manga(title=page, carpeta=page, leido=True)
+    db.session.add(manga)
+    db.session.commit()
     # Se redirecciona a la raíz del sitio.
     return redirect('/')
 
@@ -118,16 +110,23 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
-def bl_si_leido(str1, lst) -> bool:
+def bl_si_leido(str1:str) -> bool:
     """
-    Se encarga de revisar si existe el nombre del manga str1 en lst
+    Se encarga de revisar si existe el nombre del manga str1 en base de datos
     Regresa False si es encontrado para indicar que no lo incluya más adelante
     """
-    if str1 in lst:
+    mangas = Manga.query.all()
+    encontrado = False
+    for manga in mangas:
+        if manga.title == str1:
+            encontrado = True
+            break
+
+    if encontrado:
         return False
     return True
 
-def get_listado():
+def get_listado()->list:
     """
     Obtiene las carpetas dentro del directorio especificado en MMANGA_FOLDER
     y estos serán usados como nombres de los mangas.
@@ -141,7 +140,8 @@ def get_listado():
         if (dirs != 'Otros'):
             if (dirs != '.DS_Store'):
                 if (dirs.find('.zip') < 0):
-                    if bl_si_leido(dirs, app.config['MANGAS_LEIDOS']):
+                    # Verifica si el manga ya fue leído
+                    if bl_si_leido(dirs):
                         listado_directorios.append([dirs])
     listado_directorios.sort()
     listado_directorios_ordenados = natsorted(listado_directorios, key=str)
@@ -174,7 +174,7 @@ def bl_filtrar(str) -> bool:
             return False
     return True
 
-def get_imagenes(nombre_manga):
+def get_imagenes(nombre_manga:str)->list:
     """
     Obtiene las imagenes de cada subcarpeta especificada en la carpeta "nombre_manga"
     Se extraen las imagenes y se ordenan en orden correlativo natural.
