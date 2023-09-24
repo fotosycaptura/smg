@@ -42,9 +42,6 @@ def verifica_argumentos(argv):
                         elif(args[0].startswith("https://leermanga.net/manga/")):
                                 leerManga = leermanga_net.leermanga_net(smg_version, home_mangas, opciones, listado_mangas)
                                 leerManga.descargar_solo(home_mangas, args[0])
-                        elif(args[0].startswith('https://www.manhwas.net/manga/')):
-                                leer_manhwas = manhwas_net.manhwas_net(smg_version, home_mangas, opciones, listado_mangas)
-                                leer_manhwas.descargar_solo(args[0])
                         elif(args[0].startswith('https://manhwa18.cc/webtoon/')):
                                 leer_manhwas_18 = manhwas_18.manhwas_18(smg_version, home_mangas, opciones, listado_mangas)
                                 leer_manhwas_18.descargar_solo(args[0])
